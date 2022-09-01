@@ -10,10 +10,10 @@ public class UpdateCategoryCheckpointByIdCommandHandler : UpdateCheckpointByIdCo
 {
     public UpdateCategoryCheckpointByIdCommandHandler(
         IEventRepository eventRepository,
-        ICheckpointRepository<CategoryEntity> storeCheckpointRepository,
+        ICheckpointRepository<CategoryEntity> categoryCheckpointRepository,
         IMapper mapper,
         IValidator<UpdateCheckpointByIdCommand> validator,
-        ILogger<UpdateCategoryCheckpointByIdCommandHandler> logger) : base(eventRepository, storeCheckpointRepository, mapper, validator, logger)
+        ILogger<UpdateCategoryCheckpointByIdCommandHandler> logger) : base(eventRepository, categoryCheckpointRepository, mapper, validator, logger)
     {
     }
 }

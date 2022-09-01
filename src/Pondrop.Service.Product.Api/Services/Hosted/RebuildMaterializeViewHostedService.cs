@@ -33,7 +33,7 @@ public class RebuildMaterializeViewHostedService : BackgroundService
 
                 switch (command)
                 {
-                    case RebuildCategoryCheckpointCommand store:
+                    case RebuildCategoryCheckpointCommand category:
                         await mediator!.Send(new RebuildCategoryViewCommand(), stoppingToken);
                         break;
                 }

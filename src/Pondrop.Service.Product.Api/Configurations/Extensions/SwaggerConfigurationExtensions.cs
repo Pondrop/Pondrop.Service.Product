@@ -26,8 +26,8 @@ public static class SwaggerConfigurationExtensions
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
-                Title = "Pondrop.Service.Store API",
-                Description = "API endpoints for the Pondrop.Service.Store API",
+                Title = "Pondrop.Service.Product API",
+                Description = "API endpoints for the Pondrop.Service.Product API",
                 Contact = new OpenApiContact
                 {
                     Name = "",
@@ -39,7 +39,7 @@ public static class SwaggerConfigurationExtensions
             {
                 Version = "v2",
                 Title = "Pondrop.Service.Store API",
-                Description = "API endpoints for the Pondrop.Service.Store API",
+                Description = "API endpoints for the Pondrop.Service.Product API",
                 Contact = new OpenApiContact
                 {
                     Name = "",

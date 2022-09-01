@@ -16,12 +16,12 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
     private readonly ILogger<GetAllCategoriesQueryHandler> _logger;
 
     public GetAllCategoriesQueryHandler(
-        IContainerRepository<CategoryViewRecord> storeRepository,
+        IContainerRepository<CategoryViewRecord> categoryRepository,
         IMapper mapper,
         IValidator<GetAllCategoriesQuery> validator,
         ILogger<GetAllCategoriesQueryHandler> logger)
     {
-        _containerRepository = storeRepository;
+        _containerRepository = categoryRepository;
         _mapper = mapper;
         _validator = validator;
         _logger = logger;
@@ -33,7 +33,7 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
 
         if (!validation.IsValid)
         {
-            var errorMessage = $"Get all stores failed {validation}";
+            var errorMessage = $"Get all categorys failed {validation}";
             _logger.LogError(errorMessage);
             return Result<List<CategoryViewRecord>>.Error(errorMessage);
         }
