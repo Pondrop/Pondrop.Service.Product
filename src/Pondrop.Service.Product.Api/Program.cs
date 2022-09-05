@@ -39,7 +39,9 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("https://admin-portal.ashyocean-bde16918.australiaeast.azurecontainerapps.io",
-                "http://localhost:3000");
+                "http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
