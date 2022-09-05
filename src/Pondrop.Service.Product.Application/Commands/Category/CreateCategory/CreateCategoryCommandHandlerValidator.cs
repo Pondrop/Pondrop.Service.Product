@@ -13,6 +13,5 @@ public class CreateCategoryCommandHandlerValidator : AbstractValidator<CreateCat
         
         RuleFor(x => x.CategoryName).NotEmpty();
         RuleFor(x => x.Description).NotEmpty();
-        RuleFor(x => x.PublicationLifecycleId).NotEmpty();
     }
 }
