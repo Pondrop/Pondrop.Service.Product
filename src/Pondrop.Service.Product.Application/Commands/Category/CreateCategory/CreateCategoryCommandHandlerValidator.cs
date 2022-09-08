@@ -12,6 +12,5 @@ public class CreateCategoryCommandHandlerValidator : AbstractValidator<CreateCat
         _addressService = addressService;
         
         RuleFor(x => x.CategoryName).NotEmpty();
-        RuleFor(x => x.Description).NotEmpty();
     }
 }
