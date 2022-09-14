@@ -8,15 +8,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Store.Api.Tests", "tests\Pondrop.Service.Store.Api.Tests\Pondrop.Service.Store.Api.Tests.csproj", "{AC2FE504-A159-4285-B439-C182E999DF2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Api.Tests", "tests\Pondrop.Service.Store.Api.Tests\Pondrop.Service.Product.Api.Tests.csproj", "{AC2FE504-A159-4285-B439-C182E999DF2A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{562E9EBD-E544-4620-A7DA-478856114F15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Store.Application.Tests", "tests\Pondrop.Service.Store.Application.Tests\Pondrop.Service.Store.Application.Tests.csproj", "{0B60A47D-BD9B-4D1B-939A-E6C73325BC09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Application.Tests", "tests\Pondrop.Service.Store.Application.Tests\Pondrop.Service.Product.Application.Tests.csproj", "{0B60A47D-BD9B-4D1B-939A-E6C73325BC09}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Store.Infrastructure.Tests", "tests\Pondrop.Service.Store.Infrastructure.Tests\Pondrop.Service.Store.Infrastructure.Tests.csproj", "{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Infrastructure.Tests", "tests\Pondrop.Service.Store.Infrastructure.Tests\Pondrop.Service.Product.Infrastructure.Tests.csproj", "{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Store.Domain.Tests", "tests\Pondrop.Service.Store.Domain.Tests\Pondrop.Service.Store.Domain.Tests.csproj", "{2527BE8F-3221-43E8-B954-87AF06EC3EB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Domain.Tests", "tests\Pondrop.Service.Store.Domain.Tests\Pondrop.Service.Product.Domain.Tests.csproj", "{2527BE8F-3221-43E8-B954-87AF06EC3EB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Api", "src\Pondrop.Service.Product.Api\Pondrop.Service.Product.Api.csproj", "{9FB1E7C9-69CF-4B04-9517-69040D74C8BA}"
 EndProject

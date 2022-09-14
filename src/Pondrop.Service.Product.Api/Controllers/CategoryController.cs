@@ -48,7 +48,7 @@ public class CategoryController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAllCategorys()
+    public async Task<IActionResult> GetAllCategories()
     {
         var result = await _mediator.Send(new GetAllCategoriesQuery());
         return result.Match<IActionResult>(

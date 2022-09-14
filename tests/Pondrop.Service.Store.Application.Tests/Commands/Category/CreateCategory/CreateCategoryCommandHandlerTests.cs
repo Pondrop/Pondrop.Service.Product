@@ -13,46 +13,47 @@ using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Tests.Faker;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Pondrop.Service.Product.Application.Tests.Commands.StoreType.CreateStoreType;
+namespace Pondrop.Service.Product.Application.Tests.Commands.Product.CreateCategory;
 
-public class CreateStoreTypeCommandHandlerTests
+public class CreateCategoryCommandHandlerTests
 {
-    private readonly Mock<IOptions<StoreTypeUpdateConfiguration>> _StoreTypeUpdateConfigMock;
+    private readonly Mock<IOptions<CategoryUpdateConfiguration>> _CategoryUpdateConfigMock;
     private readonly Mock<IEventRepository> _eventRepositoryMock;
     private readonly Mock<IDaprService> _daprServiceMock;
     private readonly Mock<IUserService> _userServiceMock;
     private readonly Mock<IMapper> _mapperMock;
-    private readonly Mock<IValidator<CreateStoreTypeCommand>> _validatorMock;
-    private readonly Mock<ILogger<CreateStoreTypeCommandHandler>> _loggerMock;
+    private readonly Mock<IValidator<CreateCategoryCommand>> _validatorMock;
+    private readonly Mock<ILogger<CreateCategoryCommandHandler>> _loggerMock;
     
-    public CreateStoreTypeCommandHandlerTests()
+    public CreateCategoryCommandHandlerTests()
     {
-        _StoreTypeUpdateConfigMock = new Mock<IOptions<StoreTypeUpdateConfiguration>>();
+        _CategoryUpdateConfigMock = new Mock<IOptions<CategoryUpdateConfiguration>>();
         _eventRepositoryMock = new Mock<IEventRepository>();
         _daprServiceMock = new Mock<IDaprService>();
         _userServiceMock = new Mock<IUserService>();
         _mapperMock = new Mock<IMapper>();
-        _validatorMock = new Mock<IValidator<CreateStoreTypeCommand>>();
-        _loggerMock = new Mock<ILogger<CreateStoreTypeCommandHandler>>();
+        _validatorMock = new Mock<IValidator<CreateCategoryCommand>>();
+        _loggerMock = new Mock<ILogger<CreateCategoryCommandHandler>>();
 
-        _StoreTypeUpdateConfigMock
+        _CategoryUpdateConfigMock
             .Setup(x => x.Value)
-            .Returns(new StoreTypeUpdateConfiguration());
+            .Returns(new CategoryUpdateConfiguration());
         _userServiceMock
             .Setup(x => x.CurrentUserName())
             .Returns("test/user");
     }
     
     [Fact]
-    public async void CreateStoreTypeCommand_ShouldSucceed()
+    public async void CreateCategoryCommand_ShouldSucceed()
     {
         // arrange
-        var cmd = StoreTypeFaker.GetCreateStoreTypeCommand();
-        var item = StoreTypeFaker.GetStoreTypeRecord(cmd);
+        var cmd = CategoryFaker.GetCreateCategoryCommand();
+        var item = CategoryFaker.GetCategoryRecord(cmd);
         _validatorMock
             .Setup(x => x.Validate(cmd))
             .Returns(new ValidationResult());
@@ -60,7 +61,7 @@ public class CreateStoreTypeCommandHandlerTests
             .Setup(x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()))
             .Returns(Task.FromResult(true));
         _mapperMock
-            .Setup(x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()))
+            .Setup(x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()))
             .Returns(item);
         var handler = GetCommandHandler();
         
@@ -77,16 +78,16 @@ public class CreateStoreTypeCommandHandlerTests
             x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()),
             Times.Once());
         _mapperMock.Verify(
-            x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()),
+            x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()),
             Times.Once);
     }
     
     [Fact]
-    public async void CreateStoreTypeCommand_WhenInvalid_ShouldFail()
+    public async void CreateCategoryCommand_WhenInvalid_ShouldFail()
     {
         // arrange
-        var cmd = StoreTypeFaker.GetCreateStoreTypeCommand();
-        var item = StoreTypeFaker.GetStoreTypeRecord(cmd);
+        var cmd = CategoryFaker.GetCreateCategoryCommand();
+        var item = CategoryFaker.GetCategoryRecord(cmd);
         _validatorMock
             .Setup(x => x.Validate(cmd))
             .Returns(new ValidationResult(new [] { new ValidationFailure() }));
@@ -104,16 +105,16 @@ public class CreateStoreTypeCommandHandlerTests
             x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()),
             Times.Never());
         _mapperMock.Verify(
-            x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()),
+            x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()),
             Times.Never);
     }
 
     [Fact]
-    public async void CreateStoreTypeCommand_WhenAppendEventsFail_ShouldFail()
+    public async void CreateCategoryCommand_WhenAppendEventsFail_ShouldFail()
     {
         // arrange
-        var cmd = StoreTypeFaker.GetCreateStoreTypeCommand();
-        var item = StoreTypeFaker.GetStoreTypeRecord(cmd);
+        var cmd = CategoryFaker.GetCreateCategoryCommand();
+        var item = CategoryFaker.GetCategoryRecord(cmd);
         _validatorMock
             .Setup(x => x.Validate(cmd))
             .Returns(new ValidationResult());
@@ -121,7 +122,7 @@ public class CreateStoreTypeCommandHandlerTests
             .Setup(x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()))
             .Returns(Task.FromResult(false));
         _mapperMock
-            .Setup(x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()))
+            .Setup(x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()))
             .Returns(item);
         var handler = GetCommandHandler();
         
@@ -137,16 +138,16 @@ public class CreateStoreTypeCommandHandlerTests
             x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()),
             Times.Once());
         _mapperMock.Verify(
-            x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()),
+            x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()),
             Times.Never);
     }
     
     [Fact]
-    public async void CreateStoreTypeCommand_WhenException_ShouldFail()
+    public async void CreateCategoryCommand_WhenException_ShouldFail()
     {
         // arrange
-        var cmd = StoreTypeFaker.GetCreateStoreTypeCommand();
-        var item = StoreTypeFaker.GetStoreTypeRecord(cmd);
+        var cmd = CategoryFaker.GetCreateCategoryCommand();
+        var item = CategoryFaker.GetCategoryRecord(cmd);
         _validatorMock
             .Setup(x => x.Validate(cmd))
             .Returns(new ValidationResult());
@@ -154,7 +155,7 @@ public class CreateStoreTypeCommandHandlerTests
             .Setup(x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()))
             .Throws(new Exception());
         _mapperMock
-            .Setup(x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()))
+            .Setup(x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()))
             .Returns(item);
         var handler = GetCommandHandler();
         
@@ -170,13 +171,12 @@ public class CreateStoreTypeCommandHandlerTests
             x => x.AppendEventsAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<IEnumerable<IEvent>>()),
             Times.Once());
         _mapperMock.Verify(
-            x => x.Map<StoreTypeRecord>(It.IsAny<StoreTypeEntity>()),
+            x => x.Map<CategoryRecord>(It.IsAny<CategoryEntity>()),
             Times.Never);
     }
-    
-    private CreateStoreTypeCommandHandler GetCommandHandler() =>
-        new CreateStoreTypeCommandHandler(
-            _StoreTypeUpdateConfigMock.Object,
+    private CreateCategoryCommandHandler GetCommandHandler() =>
+        new CreateCategoryCommandHandler(
+            _CategoryUpdateConfigMock.Object,
             _eventRepositoryMock.Object,
             _daprServiceMock.Object,
             _userServiceMock.Object,

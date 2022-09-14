@@ -25,16 +25,4 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Pondrop.Service.Product.Api\Pondrop.Service.Product.Api.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="..\Pondrop.Service.Product.Application.Tests\Faker\RetailerFaker.cs">
-        <Link>Faker\RetailerFaker.cs</Link>
-      </Compile>
-      <Compile Include="..\Pondrop.Service.Product.Application.Tests\Faker\StoreFaker.cs">
-        <Link>Faker\StoreFaker.cs</Link>
-      </Compile>
-      <Compile Include="..\Pondrop.Service.Product.Application.Tests\Faker\StoreTypeFaker.cs">
-        <Link>Faker\StoreTypeFaker.cs</Link>
-      </Compile>
-    </ItemGroup>
 </Project>

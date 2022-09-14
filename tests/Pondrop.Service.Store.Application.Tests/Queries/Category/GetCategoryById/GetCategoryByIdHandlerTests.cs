@@ -16,32 +16,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Pondrop.Service.Product.Application.Tests.Commands.Product.CreateStore;
+namespace Pondrop.Service.Product.Application.Tests.Commands.Product.CreateCategory;
 
-public class GetStoreByIdHandlerTests
+public class GetCategoryByIdHandlerTests
 {
-    private readonly Mock<IContainerRepository<StoreViewRecord>> _storeContainerRepositoryMock;
-    private readonly Mock<IValidator<GetStoreByIdQuery>> _validatorMock;
-    private readonly Mock<ILogger<GetStoreByIdQueryHandler>> _loggerMock;
+    private readonly Mock<IContainerRepository<CategoryViewRecord>> _CategoryContainerRepositoryMock;
+    private readonly Mock<IValidator<GetCategoryByIdQuery>> _validatorMock;
+    private readonly Mock<ILogger<GetCategoryByIdQueryHandler>> _loggerMock;
     
-    public GetStoreByIdHandlerTests()
+    public GetCategoryByIdHandlerTests()
     {
-        _storeContainerRepositoryMock = new Mock<IContainerRepository<StoreViewRecord>>();
-        _validatorMock = new Mock<IValidator<GetStoreByIdQuery>>();
-        _loggerMock = new Mock<ILogger<GetStoreByIdQueryHandler>>();
+        _CategoryContainerRepositoryMock = new Mock<IContainerRepository<CategoryViewRecord>>();
+        _validatorMock = new Mock<IValidator<GetCategoryByIdQuery>>();
+        _loggerMock = new Mock<ILogger<GetCategoryByIdQueryHandler>>();
     }
     
     [Fact]
-    public async void GetStoreByIdQuery_ShouldSucceed()
+    public async void GetCategoryByIdQuery_ShouldSucceed()
     {
         // arrange
-        var query = new GetStoreByIdQuery() { Id = Guid.NewGuid() };
+        var query = new GetCategoryByIdQuery() { Id = Guid.NewGuid() };
         _validatorMock
             .Setup(x => x.Validate(query))
             .Returns(new ValidationResult());
-        _storeContainerRepositoryMock
+        _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
-            .Returns(Task.FromResult<StoreViewRecord?>(new StoreViewRecord()));
+            .Returns(Task.FromResult<CategoryViewRecord?>(new CategoryViewRecord()));
         var handler = GetQueryHandler();
         
         // act
@@ -52,22 +52,22 @@ public class GetStoreByIdHandlerTests
         _validatorMock.Verify(
             x => x.Validate(query),
             Times.Once());
-        _storeContainerRepositoryMock.Verify(
+        _CategoryContainerRepositoryMock.Verify(
             x => x.GetByIdAsync(query.Id),
             Times.Once());
     }
     
     [Fact]
-    public async void GetStoreByIdQuery_WhenInvalid_ShouldFail()
+    public async void GetCategoryByIdQuery_WhenInvalid_ShouldFail()
     {
         // arrange
-        var query = new GetStoreByIdQuery() { Id = Guid.NewGuid() };
+        var query = new GetCategoryByIdQuery() { Id = Guid.NewGuid() };
         _validatorMock
             .Setup(x => x.Validate(query))
             .Returns(new ValidationResult(new [] { new ValidationFailure() }));
-        _storeContainerRepositoryMock
+        _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
-            .Returns(Task.FromResult<StoreViewRecord?>(new StoreViewRecord()));
+            .Returns(Task.FromResult<CategoryViewRecord?>(new CategoryViewRecord()));
         var handler = GetQueryHandler();
         
         // act
@@ -78,22 +78,22 @@ public class GetStoreByIdHandlerTests
         _validatorMock.Verify(
             x => x.Validate(query),
             Times.Once());
-        _storeContainerRepositoryMock.Verify(
+        _CategoryContainerRepositoryMock.Verify(
             x => x.GetByIdAsync(query.Id),
             Times.Never());
     }
     
     [Fact]
-    public async void GetStoreByIdQuery_WhenNotFound_ShouldSucceedWithNull()
+    public async void GetCategoryByIdQuery_WhenNotFound_ShouldSucceedWithNull()
     {
         // arrange
-        var query = new GetStoreByIdQuery() { Id = Guid.NewGuid() };
+        var query = new GetCategoryByIdQuery() { Id = Guid.NewGuid() };
         _validatorMock
             .Setup(x => x.Validate(query))
             .Returns(new ValidationResult());
-        _storeContainerRepositoryMock
+        _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
-            .Returns(Task.FromResult<StoreViewRecord?>(null));
+            .Returns(Task.FromResult<CategoryViewRecord?>(null));
         var handler = GetQueryHandler();
         
         // act
@@ -105,21 +105,21 @@ public class GetStoreByIdHandlerTests
         _validatorMock.Verify(
             x => x.Validate(query),
             Times.Once());
-        _storeContainerRepositoryMock.Verify(
+        _CategoryContainerRepositoryMock.Verify(
             x => x.GetByIdAsync(query.Id),
             Times.Once());
     }
     
     [Fact]
-    public async void GetStoreByIdQuery_WhenThrows_ShouldFail()
+    public async void GetCategoryByIdQuery_WhenThrows_ShouldFail()
     {
         // arrange
-        var query = new GetStoreByIdQuery() { Id = Guid.NewGuid() };
-        var item = StoreFaker.GetStoreRecords(1).Single();
+        var query = new GetCategoryByIdQuery() { Id = Guid.NewGuid() };
+        var item = CategoryFaker.GetCategoryRecords(1).Single();
         _validatorMock
             .Setup(x => x.Validate(query))
             .Returns(new ValidationResult());
-        _storeContainerRepositoryMock
+        _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
             .Throws(new Exception());
         var handler = GetQueryHandler();
@@ -132,14 +132,14 @@ public class GetStoreByIdHandlerTests
         _validatorMock.Verify(
             x => x.Validate(query),
             Times.Once());
-        _storeContainerRepositoryMock.Verify(
+        _CategoryContainerRepositoryMock.Verify(
             x => x.GetByIdAsync(query.Id),
             Times.Once());
     }
     
-    private GetStoreByIdQueryHandler GetQueryHandler() =>
-        new GetStoreByIdQueryHandler(
-            _storeContainerRepositoryMock.Object,
+    private GetCategoryByIdQueryHandler GetQueryHandler() =>
+        new GetCategoryByIdQueryHandler(
+            _CategoryContainerRepositoryMock.Object,
             _validatorMock.Object,
             _loggerMock.Object);
 }
