@@ -8,26 +8,26 @@ using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Queries;
 
-public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, Result<List<CategoryViewRecord>>>
+public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, Result<List<CategoryEntity>>>
 {
-    private readonly IContainerRepository<CategoryViewRecord> _containerRepository;
+    private readonly ICheckpointRepository<CategoryEntity> _categoryRepository;
     private readonly IMapper _mapper;
     private readonly IValidator<GetAllCategoriesQuery> _validator;
     private readonly ILogger<GetAllCategoriesQueryHandler> _logger;
 
     public GetAllCategoriesQueryHandler(
-        IContainerRepository<CategoryViewRecord> categoryRepository,
+        ICheckpointRepository<CategoryEntity> categoryRepository,
         IMapper mapper,
         IValidator<GetAllCategoriesQuery> validator,
         ILogger<GetAllCategoriesQueryHandler> logger)
     {
-        _containerRepository = categoryRepository;
+        _categoryRepository = categoryRepository;
         _mapper = mapper;
         _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<List<CategoryViewRecord>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<CategoryEntity>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
     {
         var validation = _validator.Validate(request);
 
@@ -35,20 +35,20 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
         {
             var errorMessage = $"Get all categorys failed {validation}";
             _logger.LogError(errorMessage);
-            return Result<List<CategoryViewRecord>>.Error(errorMessage);
+            return Result<List<CategoryEntity>>.Error(errorMessage);
         }
 
-        var result = default(Result<List<CategoryViewRecord>>);
+        var result = default(Result<List<CategoryEntity>>);
 
         try
         {
-            var records = await _containerRepository.GetAllAsync();
-            result = Result<List<CategoryViewRecord>>.Success(records);
+            var records = await _categoryRepository.GetAllAsync();
+            result = Result<List<CategoryEntity>>.Success(records);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            result = Result<List<CategoryViewRecord>>.Error(ex);
+            result = Result<List<CategoryEntity>>.Error(ex);
         }
 
         return result;

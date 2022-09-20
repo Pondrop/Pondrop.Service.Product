@@ -105,7 +105,7 @@ public class ServiceBusListenerService : IServiceBusListenerService
                             switch (command)
                             {
                                 case UpdateCategoryCheckpointByIdCommand category:
-                                    await mediator!.Send(new UpdateCategoryViewCommand() {  CategoryId = category.Id });
+                                    //await mediator!.Send(new UpdateCategoryViewCommand() {  CategoryId = category.Id });
                                     break;
                             }
                         }

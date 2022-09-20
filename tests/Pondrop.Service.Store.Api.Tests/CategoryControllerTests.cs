@@ -42,10 +42,10 @@ namespace Pondrop.Service.Product.Api.Tests
         public async void GetAllCategories_ShouldReturnOkResult()
         {
             // arrange
-            var items = CategoryFaker.GetCategoryViewRecords();
+            var items = CategoryFaker.GetCategoryEntities();
             _mediatorMock
                 .Setup(x => x.Send(It.IsAny<GetAllCategoriesQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result<List<CategoryViewRecord>>.Success(items));
+                .ReturnsAsync(Result<List<CategoryEntity>>.Success(items));
             var controller = GetController();
 
             // act
@@ -61,7 +61,7 @@ namespace Pondrop.Service.Product.Api.Tests
         public async void GetAllCategories_ShouldReturnBadResult_WhenFailedResult()
         {
             // arrange
-            var failedResult = Result<List<CategoryViewRecord>>.Error("Invalid result!");
+            var failedResult = Result<List<CategoryEntity>>.Error("Invalid result!");
             _mediatorMock
                 .Setup(x => x.Send(It.IsAny<GetAllCategoriesQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(failedResult);
@@ -80,10 +80,10 @@ namespace Pondrop.Service.Product.Api.Tests
         public async void GetCategoryById_ShouldReturnOkResult()
         {
             // arrange
-            var item = CategoryFaker.GetCategoryViewRecords(1).Single();
+            var item = CategoryFaker.GetCategoryEntities(1).Single();
             _mediatorMock
                 .Setup(x => x.Send(It.Is<GetCategoryByIdQuery>(x => x.Id == item.Id), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Result<CategoryViewRecord>.Success(item));
+                .ReturnsAsync(Result<CategoryEntity>.Success(item));
             var controller = GetController();
         
             // act
@@ -99,7 +99,7 @@ namespace Pondrop.Service.Product.Api.Tests
         public async void GetCategoryById_ShouldReturnBadResult_WhenFailedResult()
         {
             // arrange
-            var failedResult = Result<CategoryViewRecord>.Error("Invalid result!");
+            var failedResult = Result<CategoryEntity>.Error("Invalid result!");
             _mediatorMock
                 .Setup(x => x.Send(It.IsAny<GetCategoryByIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(failedResult);

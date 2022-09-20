@@ -3,14 +3,14 @@ namespace Pondrop.Service.Product.Domain.Models;
 
 public record CategoryViewRecord(
         Guid Id,
-        string CategoryName,
-        string Description,
+        string Name,
+        string Type,
         string PublicationLifecycleId,
         string CreatedBy,
         string UpdatedBy,
         DateTime CreatedUtc,
         DateTime UpdatedUtc)
-    : CategoryRecord(Id, CategoryName, Description, PublicationLifecycleId, CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc)
+    : CategoryRecord(Id, Name, Type, PublicationLifecycleId, CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc)
 {
     public CategoryViewRecord() : this(
         Guid.Empty,

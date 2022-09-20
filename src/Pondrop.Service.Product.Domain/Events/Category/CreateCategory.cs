@@ -4,6 +4,6 @@ namespace Pondrop.Service.Product.Domain.Events.Category;
 
 public record CreateCategory(
     Guid Id,
-    string CategoryName,
-    string Description,
+    string Name,
+    string Type,
     string PublicationLifecycleId) : EventPayload;

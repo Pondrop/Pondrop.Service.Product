@@ -11,7 +11,7 @@ namespace Pondrop.Service.Product.Tests.Faker;
 public static class CategoryFaker
 {
     private static readonly string[] Names = new[] { "The Local", "The Far Away", "The Just Right", "Test" };
-    private static readonly string[] Descriptions = new[] { "Lakes", "Rivers", "Seaside" };
+    private static readonly string[] Types = new[] { "Lakes", "Rivers", "Seaside" };
     private static readonly string[] Ids = new[] { "12", "1213", "2132", "13", "3012300", "1232" };
     private static readonly string[] UserNames = new[] { "test/faker", "test/jsmith", "test/bsmith", "test/asmith", "test/account" };
     
@@ -19,8 +19,8 @@ public static class CategoryFaker
     {
         var faker = new Faker<CategoryRecord>()
             .RuleFor(x => x.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.CategoryName, f => f.PickRandom(Names))
-            .RuleFor(x => x.Description, f => f.PickRandom(Descriptions))
+            .RuleFor(x => x.Name, f => f.PickRandom(Names))
+            .RuleFor(x => x.Type, f => f.PickRandom(Types))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids))
             .RuleFor(x => x.CreatedBy, f => f.PickRandom(UserNames))
             .RuleFor(x => x.CreatedUtc, f => DateTime.UtcNow.AddSeconds(-1 * f.Random.Int(5000, 10000)))
@@ -35,8 +35,8 @@ public static class CategoryFaker
         
         var faker = new Faker<CategoryViewRecord>()
             .RuleFor(x => x.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.CategoryName, f => f.PickRandom(Names))
-            .RuleFor(x => x.Description, f => f.PickRandom(Descriptions))
+            .RuleFor(x => x.Name, f => f.PickRandom(Names))
+            .RuleFor(x => x.Type, f => f.PickRandom(Types))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids))
             .RuleFor(x => x.CreatedBy, f => f.PickRandom(UserNames))
             .RuleFor(x => x.CreatedUtc, f => DateTime.UtcNow.AddSeconds(-1 * f.Random.Int(5000, 10000)))
@@ -49,8 +49,8 @@ public static class CategoryFaker
     public static CreateCategoryCommand GetCreateCategoryCommand()
     {
         var faker = new Faker<CreateCategoryCommand>()
-            .RuleFor(x => x.CategoryName, f => f.PickRandom(Names))
-            .RuleFor(x => x.Description, f => f.PickRandom(Descriptions))
+            .RuleFor(x => x.Name, f => f.PickRandom(Names))
+            .RuleFor(x => x.Type, f => f.PickRandom(Types))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids));
         return faker.Generate();
     }
@@ -58,8 +58,8 @@ public static class CategoryFaker
     {
         var faker = new Faker<UpdateCategoryCommand>()
             .RuleFor(x => x.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.CategoryName, f => f.PickRandom(Names))
-            .RuleFor(x => x.Description, f => f.PickRandom(Descriptions))
+            .RuleFor(x => x.Name, f => f.PickRandom(Names))
+            .RuleFor(x => x.Type, f => f.PickRandom(Types))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids));
         return faker.Generate();
     }
@@ -70,8 +70,8 @@ public static class CategoryFaker
         
         var faker = new Faker<CategoryRecord>()
             .RuleFor(x => x.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.CategoryName, f => f.PickRandom(Names))
-            .RuleFor(x => x.Description, f => f.PickRandom(Descriptions))
+            .RuleFor(x => x.Name, f => f.PickRandom(Names))
+            .RuleFor(x => x.Type, f => f.PickRandom(Types))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids))
             .RuleFor(x => x.CreatedBy, f => UserNames.First())
             .RuleFor(x => x.CreatedUtc, f => utcNow)
@@ -87,8 +87,8 @@ public static class CategoryFaker
         
         var faker = new Faker<CategoryRecord>()
             .RuleFor(x => x.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.CategoryName, f => f.PickRandom(Names))
-            .RuleFor(x => x.Description, f => f.PickRandom(Descriptions))
+            .RuleFor(x => x.Name, f => f.PickRandom(Names))
+            .RuleFor(x => x.Type, f => f.PickRandom(Types))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids))
             .RuleFor(x => x.CreatedBy, f => UserNames.First())
             .RuleFor(x => x.CreatedUtc, f => utcNow)

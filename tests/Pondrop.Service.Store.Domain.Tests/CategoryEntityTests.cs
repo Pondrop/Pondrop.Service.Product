@@ -8,7 +8,7 @@ namespace Pondrop.Service.Product.Domain.Tests;
 public class CategoryEntityTests
 {
     private const string Name = "My Category";
-    private const string Description = "Test description";
+    private const string Type = "Test Type";
     private const string PublicationLifecycleId = "121323442";
     private const string CreatedBy = "user/admin1";
     private const string UpdatedBy = "user/admin2";
@@ -38,8 +38,8 @@ public class CategoryEntityTests
         // assert
         Assert.NotNull(entity);
         Assert.NotEqual(Guid.Empty, entity.Id);
-        Assert.Equal(Name, entity.CategoryName);
-        Assert.Equal(Description, entity.Description);
+        Assert.Equal(Name, entity.Name);
+        Assert.Equal(Type, entity.Type);
         Assert.Equal(PublicationLifecycleId, entity.PublicationLifecycleId);
         Assert.Equal(CreatedBy, entity.CreatedBy);
         Assert.Equal(1, entity.EventsCount);
@@ -47,7 +47,7 @@ public class CategoryEntityTests
 
     private CategoryEntity GetNewCategory() => new CategoryEntity(
         Name,
-        Description,
+        Type,
         PublicationLifecycleId,
         CreatedBy);
 

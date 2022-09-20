@@ -2,8 +2,8 @@
 
 public record CategoryRecord(
         Guid Id,
-        string CategoryName,
-        string Description,
+        string Name,
+        string Type,
         string PublicationLifecycleId,
         string CreatedBy,
         string UpdatedBy,

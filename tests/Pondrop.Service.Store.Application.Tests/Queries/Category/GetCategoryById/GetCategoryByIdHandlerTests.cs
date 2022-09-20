@@ -20,13 +20,13 @@ namespace Pondrop.Service.Product.Application.Tests.Commands.Product.CreateCateg
 
 public class GetCategoryByIdHandlerTests
 {
-    private readonly Mock<IContainerRepository<CategoryViewRecord>> _CategoryContainerRepositoryMock;
+    private readonly Mock<ICheckpointRepository<CategoryEntity>> _CategoryContainerRepositoryMock;
     private readonly Mock<IValidator<GetCategoryByIdQuery>> _validatorMock;
     private readonly Mock<ILogger<GetCategoryByIdQueryHandler>> _loggerMock;
     
     public GetCategoryByIdHandlerTests()
     {
-        _CategoryContainerRepositoryMock = new Mock<IContainerRepository<CategoryViewRecord>>();
+        _CategoryContainerRepositoryMock = new Mock<ICheckpointRepository<CategoryEntity>>();
         _validatorMock = new Mock<IValidator<GetCategoryByIdQuery>>();
         _loggerMock = new Mock<ILogger<GetCategoryByIdQueryHandler>>();
     }
@@ -41,7 +41,7 @@ public class GetCategoryByIdHandlerTests
             .Returns(new ValidationResult());
         _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
-            .Returns(Task.FromResult<CategoryViewRecord?>(new CategoryViewRecord()));
+            .Returns(Task.FromResult<CategoryEntity?>(new CategoryEntity()));
         var handler = GetQueryHandler();
         
         // act
@@ -67,7 +67,7 @@ public class GetCategoryByIdHandlerTests
             .Returns(new ValidationResult(new [] { new ValidationFailure() }));
         _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
-            .Returns(Task.FromResult<CategoryViewRecord?>(new CategoryViewRecord()));
+            .Returns(Task.FromResult<CategoryEntity?>(new CategoryEntity()));
         var handler = GetQueryHandler();
         
         // act
@@ -93,7 +93,7 @@ public class GetCategoryByIdHandlerTests
             .Returns(new ValidationResult());
         _CategoryContainerRepositoryMock
             .Setup(x => x.GetByIdAsync(query.Id))
-            .Returns(Task.FromResult<CategoryViewRecord?>(null));
+            .Returns(Task.FromResult<CategoryEntity?>(null));
         var handler = GetQueryHandler();
         
         // act

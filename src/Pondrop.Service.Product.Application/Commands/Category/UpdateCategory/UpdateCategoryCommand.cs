@@ -7,7 +7,7 @@ namespace Pondrop.Service.Product.Application.Commands;
 public class UpdateCategoryCommand : IRequest<Result<CategoryRecord>>
 {
     public Guid Id { get; init; } = Guid.Empty;
-    public string? CategoryName { get; init; } = null;
-    public string? Description { get; init; } = null;
+    public string? Name { get; init; } = null;
+    public string? Type { get; init; } = null;
     public string? PublicationLifecycleId { get; init; } = null;
 }

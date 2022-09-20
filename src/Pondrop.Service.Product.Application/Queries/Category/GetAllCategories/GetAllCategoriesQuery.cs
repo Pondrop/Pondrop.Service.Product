@@ -4,6 +4,6 @@ using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Queries;
 
-public class GetAllCategoriesQuery : IRequest<Result<List<CategoryViewRecord>>>
+public class GetAllCategoriesQuery : IRequest<Result<List<CategoryEntity>>>
 {
 }

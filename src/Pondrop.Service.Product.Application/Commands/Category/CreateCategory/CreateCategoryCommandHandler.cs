@@ -53,10 +53,10 @@ public class CreateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
 
 
             var categoryEntity = new CategoryEntity(
-                command.CategoryName,
-                command.Description,
+                command.Name,
+                command.Type,
                 command.PublicationLifecycleId,
-                _userService.CurrentUserName());
+                _userService.CurrentUserId());
            
             var success = await _eventRepository.AppendEventsAsync(categoryEntity.StreamId, 0, categoryEntity.GetEvents());
 

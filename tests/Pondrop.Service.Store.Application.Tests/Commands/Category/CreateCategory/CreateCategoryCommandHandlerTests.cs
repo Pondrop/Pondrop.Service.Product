@@ -44,7 +44,7 @@ public class CreateCategoryCommandHandlerTests
             .Setup(x => x.Value)
             .Returns(new CategoryUpdateConfiguration());
         _userServiceMock
-            .Setup(x => x.CurrentUserName())
+            .Setup(x => x.CurrentUserId())
             .Returns("test/user");
     }
     

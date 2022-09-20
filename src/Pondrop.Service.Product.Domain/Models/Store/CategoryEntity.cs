@@ -9,8 +9,8 @@ public record CategoryEntity : EventEntity
     public CategoryEntity()
     {
         Id = Guid.Empty;
-        CategoryName = string.Empty;
-        Description = string.Empty;
+        Name = string.Empty;
+        Type = string.Empty;
         PublicationLifecycleId = string.Empty;
     }
 
@@ -22,17 +22,17 @@ public record CategoryEntity : EventEntity
         }
     }
 
-    public CategoryEntity(string categoryName, string description, string publicationLifecycleId, string createdBy) : this()
+    public CategoryEntity(string name, string type, string publicationLifecycleId, string createdBy) : this()
     {
-        var create = new CreateCategory(Guid.NewGuid(), categoryName, description, publicationLifecycleId);
+        var create = new CreateCategory(Guid.NewGuid(), name, type, publicationLifecycleId);
         Apply(create, createdBy);
     }
 
-    [JsonProperty(PropertyName = "categoryName")]
-    public string CategoryName { get; private set; }
+    [JsonProperty(PropertyName = "name")]
+    public string Name { get; private set; }
 
-    [JsonProperty(PropertyName = "description")]
-    public string Description { get; private set; }
+    [JsonProperty(PropertyName = "type")]
+    public string Type { get; private set; }
 
     [JsonProperty(PropertyName = "publicationLifecycleID")]
     public string PublicationLifecycleId { get; private set; }
@@ -72,8 +72,8 @@ public record CategoryEntity : EventEntity
     private void When(CreateCategory create, string createdBy, DateTime createdUtc)
     {
         Id = create.Id;
-        CategoryName = create.CategoryName;
-        Description = create.Description;
+        Name = create.Name;
+        Type = create.Type;
         PublicationLifecycleId = create.PublicationLifecycleId;
         CreatedBy = UpdatedBy = createdBy;
         CreatedUtc = UpdatedUtc = createdUtc;
@@ -81,16 +81,16 @@ public record CategoryEntity : EventEntity
 
     private void When(UpdateCategory update, string createdBy, DateTime createdUtc)
     {
-        var oldCategoryName = CategoryName;
-        var oldDescription = Description;
+        var oldName = Name;
+        var oldType = Type;
         var oldPublicationLifecycleID = PublicationLifecycleId;
 
-        CategoryName = update.CategoryName ?? CategoryName;
-        Description = update.Description ?? Description;
+        Name = update.Name ?? Name;
+        Type = update.Type ?? Type;
         PublicationLifecycleId = update.PublicationLifecycleId ?? PublicationLifecycleId;
 
-        if (oldCategoryName != CategoryName ||
-            oldDescription != Description ||
+        if (oldName != Name ||
+            oldType != Type ||
             oldPublicationLifecycleID != PublicationLifecycleId)
         {
             UpdatedBy = createdBy;

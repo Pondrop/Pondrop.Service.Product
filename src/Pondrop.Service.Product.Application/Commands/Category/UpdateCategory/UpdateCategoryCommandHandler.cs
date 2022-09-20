@@ -60,10 +60,10 @@ public class UpdateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
             if (categoryEntity is not null)
             {
                 var evtPayload = new UpdateCategory(
-                    command.CategoryName,
-                    command.Description,
+                    command.Name,
+                    command.Type,
                     command.PublicationLifecycleId);
-                var createdBy = _userService.CurrentUserName();
+                var createdBy = _userService.CurrentUserId();
 
                 var success = await UpdateStreamAsync(categoryEntity, evtPayload, createdBy);
 

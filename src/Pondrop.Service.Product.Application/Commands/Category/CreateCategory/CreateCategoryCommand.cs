@@ -6,7 +6,7 @@ namespace Pondrop.Service.Product.Application.Commands;
 
 public class CreateCategoryCommand : IRequest<Result<CategoryRecord>>
 {
-    public string CategoryName { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
+    public string Type { get; init; } = string.Empty;
     public string PublicationLifecycleId { get; init; } = string.Empty;
 }

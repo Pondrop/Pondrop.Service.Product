@@ -12,9 +12,9 @@ public static class SwaggerConfigurationExtensions
         app.UseSwaggerUI(
             options =>
             {
-                foreach (var description in provider.ApiVersionDescriptions)
+                foreach (var Description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    options.SwaggerEndpoint($"/swagger/{Description.GroupName}/swagger.json", Description.GroupName.ToUpperInvariant());
                 }
             });
     }
