@@ -16,9 +16,12 @@ using Pondrop.Service.Product.Application.Interfaces;
 using Pondrop.Service.Product.Application.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
 using Pondrop.Service.Product.Domain.Models;
+using Pondrop.Service.Product.Domain.Models.Category;
+using Pondrop.Service.Product.Domain.Models.Product;
 using Pondrop.Service.Product.Infrastructure.CosmosDb;
 using Pondrop.Service.Product.Infrastructure.Dapr;
 using Pondrop.Service.Product.Infrastructure.ServiceBus;
+using Pondrop.Service.ProductCategory.Domain.Models;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -140,7 +143,9 @@ services.AddFluentValidation(config =>
 services.Configure<CosmosConfiguration>(configuration.GetSection(CosmosConfiguration.Key));
 services.Configure<ServiceBusConfiguration>(configuration.GetSection(ServiceBusConfiguration.Key));
 services.Configure<CategorySearchIndexConfiguration>(configuration.GetSection(CategorySearchIndexConfiguration.Key));
+services.Configure<ProductSearchIndexConfiguration>(configuration.GetSection(ProductSearchIndexConfiguration.Key));
 services.Configure<CategoryUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(CategoryUpdateConfiguration.Key));
+services.Configure<ProductUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(ProductUpdateConfiguration.Key));
 
 services.AddHostedService<ServiceBusHostedService>();
 services.AddSingleton<IServiceBusListenerService, ServiceBusListenerService>();
@@ -153,6 +158,10 @@ services.AddSingleton<IUserService, UserService>();
 services.AddSingleton<IEventRepository, EventRepository>();
 services.AddSingleton<ICheckpointRepository<CategoryEntity>, CheckpointRepository<CategoryEntity>>();
 services.AddSingleton<IContainerRepository<CategoryViewRecord>, ContainerRepository<CategoryViewRecord>>();
+services.AddSingleton<IContainerRepository<CategoryWithProductsViewRecord>, ContainerRepository<CategoryWithProductsViewRecord>>();
+services.AddSingleton<IContainerRepository<ProductWithCategoryViewRecord>, ContainerRepository<ProductWithCategoryViewRecord>>();
+services.AddSingleton<ICheckpointRepository<ProductEntity>, CheckpointRepository<ProductEntity>>();
+services.AddSingleton<ICheckpointRepository<ProductCategoryEntity>, CheckpointRepository<ProductCategoryEntity>>();
 services.AddSingleton<IDaprService, DaprService>();
 services.AddSingleton<IServiceBusService, ServiceBusService>();
 

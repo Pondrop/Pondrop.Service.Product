@@ -2,9 +2,9 @@
 
 namespace Pondrop.Service.Product.Application.Queries;
 
-public class GetAllStoresQueryHandlerValidator : AbstractValidator<GetAllCategoriesQuery>
+public class GetAllCategoriesQueryHandlerValidator : AbstractValidator<GetAllCategoriesQuery>
 {
-    public GetAllStoresQueryHandlerValidator()
+    public GetAllCategoriesQueryHandlerValidator()
     {
     }
 }

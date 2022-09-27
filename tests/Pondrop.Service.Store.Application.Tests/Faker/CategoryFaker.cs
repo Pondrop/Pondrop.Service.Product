@@ -36,12 +36,7 @@ public static class CategoryFaker
         var faker = new Faker<CategoryViewRecord>()
             .RuleFor(x => x.Id, f => Guid.NewGuid())
             .RuleFor(x => x.Name, f => f.PickRandom(Names))
-            .RuleFor(x => x.Type, f => f.PickRandom(Types))
-            .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids))
-            .RuleFor(x => x.CreatedBy, f => f.PickRandom(UserNames))
-            .RuleFor(x => x.CreatedUtc, f => DateTime.UtcNow.AddSeconds(-1 * f.Random.Int(5000, 10000)))
-            .RuleFor(x => x.UpdatedBy, f => f.PickRandom(UserNames))
-            .RuleFor(x => x.UpdatedUtc, f => DateTime.UtcNow);
+            .RuleFor(x => x.Type, f => f.PickRandom(Types));
 
         return faker.Generate(Math.Max(0, count));
     }
