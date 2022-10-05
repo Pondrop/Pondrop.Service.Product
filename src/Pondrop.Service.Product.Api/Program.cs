@@ -145,6 +145,7 @@ services.Configure<ServiceBusConfiguration>(configuration.GetSection(ServiceBusC
 services.Configure<CategorySearchIndexConfiguration>(configuration.GetSection(CategorySearchIndexConfiguration.Key));
 services.Configure<ProductSearchIndexConfiguration>(configuration.GetSection(ProductSearchIndexConfiguration.Key));
 services.Configure<CategoryUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(CategoryUpdateConfiguration.Key));
+services.Configure<CategoryUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(CategoryUpdateConfiguration.Key));
 services.Configure<ProductUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(ProductUpdateConfiguration.Key));
 
 services.AddHostedService<ServiceBusHostedService>();
@@ -156,12 +157,13 @@ services.AddSingleton<IRebuildCheckpointQueueService, RebuildCheckpointQueueServ
 services.AddSingleton<IAddressService, AddressService>();
 services.AddSingleton<IUserService, UserService>();
 services.AddSingleton<IEventRepository, EventRepository>();
-services.AddSingleton<ICheckpointRepository<CategoryEntity>, CheckpointRepository<CategoryEntity>>();
 services.AddSingleton<IContainerRepository<CategoryViewRecord>, ContainerRepository<CategoryViewRecord>>();
 services.AddSingleton<IContainerRepository<CategoryWithProductsViewRecord>, ContainerRepository<CategoryWithProductsViewRecord>>();
 services.AddSingleton<IContainerRepository<ProductWithCategoryViewRecord>, ContainerRepository<ProductWithCategoryViewRecord>>();
 services.AddSingleton<ICheckpointRepository<ProductEntity>, CheckpointRepository<ProductEntity>>();
 services.AddSingleton<ICheckpointRepository<ProductCategoryEntity>, CheckpointRepository<ProductCategoryEntity>>();
+services.AddSingleton<ICheckpointRepository<CategoryEntity>, CheckpointRepository<CategoryEntity>>();
+services.AddSingleton<ICheckpointRepository<CategoryGroupingEntity>, CheckpointRepository<CategoryGroupingEntity>>();
 services.AddSingleton<IDaprService, DaprService>();
 services.AddSingleton<IServiceBusService, ServiceBusService>();
 
