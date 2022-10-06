@@ -55,7 +55,8 @@ builder.Services.AddCors(options =>
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName.ToLowerInvariant()}.json", optional: true, reloadOnChange: true);
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName.ToLowerInvariant()}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 services.Configure<JsonOptions>(options =>
 {
