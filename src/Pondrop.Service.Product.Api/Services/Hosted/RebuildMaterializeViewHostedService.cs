@@ -36,6 +36,9 @@ public class RebuildMaterializeViewHostedService : BackgroundService
                     case RebuildCategoryCheckpointCommand category:
                         await mediator!.Send(new RebuildCategoryViewCommand(), stoppingToken);
                         break;
+                    case RebuildCategoryGroupingCheckpointCommand categoryGrouping:
+                        await mediator!.Send(new RebuildCategoryGroupingViewCommand(), stoppingToken);
+                        break;
                 }
             }
             catch (Exception ex)

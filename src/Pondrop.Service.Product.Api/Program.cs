@@ -164,6 +164,7 @@ services.AddSingleton<IContainerRepository<ProductWithCategoryViewRecord>, Conta
 services.AddSingleton<ICheckpointRepository<ProductEntity>, CheckpointRepository<ProductEntity>>();
 services.AddSingleton<ICheckpointRepository<ProductCategoryEntity>, CheckpointRepository<ProductCategoryEntity>>();
 services.AddSingleton<ICheckpointRepository<CategoryEntity>, CheckpointRepository<CategoryEntity>>();
+services.AddSingleton<IContainerRepository<CategoryGroupingViewRecord>, ContainerRepository<CategoryGroupingViewRecord>>();
 services.AddSingleton<ICheckpointRepository<CategoryGroupingEntity>, CheckpointRepository<CategoryGroupingEntity>>();
 services.AddSingleton<IDaprService, DaprService>();
 services.AddSingleton<IServiceBusService, ServiceBusService>();

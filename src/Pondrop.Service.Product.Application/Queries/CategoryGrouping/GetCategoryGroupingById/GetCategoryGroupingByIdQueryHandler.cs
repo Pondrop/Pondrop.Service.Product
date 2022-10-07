@@ -8,23 +8,23 @@ using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Queries;
 
-public class GetCategoryGroupingByIdQueryHandler : IRequestHandler<GetCategoryGroupingByIdQuery, Result<CategoryGroupingEntity?>>
+public class GetCategoryGroupingByIdQueryHandler : IRequestHandler<GetCategoryGroupingByIdQuery, Result<CategoryGroupingViewRecord?>>
 {
-    private readonly ICheckpointRepository<CategoryGroupingEntity> _checkpointRepository;
+    private readonly IContainerRepository<CategoryGroupingViewRecord> _containerRepository;
     private readonly IValidator<GetCategoryGroupingByIdQuery> _validator;
     private readonly ILogger<GetCategoryGroupingByIdQueryHandler> _logger;
 
     public GetCategoryGroupingByIdQueryHandler(
-        ICheckpointRepository<CategoryGroupingEntity> checkpointRepository,
+        IContainerRepository<CategoryGroupingViewRecord> containerRepository,
         IValidator<GetCategoryGroupingByIdQuery> validator,
         ILogger<GetCategoryGroupingByIdQueryHandler> logger)
     {
-        _checkpointRepository = checkpointRepository;
+        _containerRepository = containerRepository;
         _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<CategoryGroupingEntity?>> Handle(GetCategoryGroupingByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<CategoryGroupingViewRecord?>> Handle(GetCategoryGroupingByIdQuery query, CancellationToken cancellationToken)
     {
         var validation = _validator.Validate(query);
 
@@ -32,23 +32,23 @@ public class GetCategoryGroupingByIdQueryHandler : IRequestHandler<GetCategoryGr
         {
             var errorMessage = $"Get category by id failed {validation}";
             _logger.LogError(errorMessage);
-            return Result<CategoryGroupingEntity?>.Error(errorMessage);
+            return Result<CategoryGroupingViewRecord?>.Error(errorMessage);
         }
 
-        var result = default(Result<CategoryGroupingEntity?>);
+        var result = default(Result<CategoryGroupingViewRecord?>);
 
         try
         {
-            var record = await _checkpointRepository.GetByIdAsync(query.Id);
+            var record = await _containerRepository.GetByIdAsync(query.Id);
 
             result = record is not null
-                ? Result<CategoryGroupingEntity?>.Success(record)
-                : Result<CategoryGroupingEntity?>.Success(null);
+                ? Result<CategoryGroupingViewRecord?>.Success(record)
+                : Result<CategoryGroupingViewRecord?>.Success(null);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            result = Result<CategoryGroupingEntity?>.Error(ex);
+            result = Result<CategoryGroupingViewRecord?>.Error(ex);
         }
 
         return result;

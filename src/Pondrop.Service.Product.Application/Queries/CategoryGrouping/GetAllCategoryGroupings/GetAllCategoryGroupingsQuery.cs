@@ -4,6 +4,6 @@ using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Queries;
 
-public class GetAllCategoryGroupingsQuery : IRequest<Result<List<CategoryGroupingEntity>>>
+public class GetAllCategoryGroupingsQuery : IRequest<Result<List<CategoryGroupingViewRecord>>>
 {
 }
