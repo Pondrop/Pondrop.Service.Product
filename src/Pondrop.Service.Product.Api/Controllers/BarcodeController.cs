@@ -20,8 +20,7 @@ public class BarcodeController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IServiceBusService _serviceBusService;
     private readonly IRebuildCheckpointQueueService _rebuildCheckpointQueueService;
-    private readonly CategorySearchIndexConfiguration _searchIdxConfig;
-    private readonly ILogger<CategoryController> _logger;
+    private readonly ILogger<BarcodeController> _logger;
 
     private readonly HttpProxyOptions _searchProxyOptions;
 
@@ -29,22 +28,12 @@ public class BarcodeController : ControllerBase
         IMediator mediator,
         IServiceBusService serviceBusService,
         IRebuildCheckpointQueueService rebuildCheckpointQueueService,
-        IOptions<CategorySearchIndexConfiguration> searchIdxConfig,
-        ILogger<CategoryController> logger)
+        ILogger<BarcodeController> logger)
     {
         _mediator = mediator;
         _serviceBusService = serviceBusService;
         _rebuildCheckpointQueueService = rebuildCheckpointQueueService;
-        _searchIdxConfig = searchIdxConfig.Value;
         _logger = logger;
-
-        _searchProxyOptions = HttpProxyOptionsBuilder
-            .Instance
-            .WithBeforeSend((httpContext, requestMessage) =>
-            {
-                requestMessage.Headers.Add("api-key", _searchIdxConfig.ApiKey);
-                return Task.CompletedTask;
-            }).Build();
     }
 
     [HttpGet]
@@ -126,19 +115,5 @@ public class BarcodeController : ControllerBase
     {
         _rebuildCheckpointQueueService.Queue(new RebuildBarcodeCheckpointCommand());
         return new AcceptedResult();
-    }
-
-    [HttpGet, HttpPost]
-    [Route("search")]
-    public Task ProxySearchCatchAll()
-    {
-        var queryString = this.Request.QueryString.Value?.TrimStart('?') ?? string.Empty;
-        var url = Path.Combine(
-            _searchIdxConfig.BaseUrl,
-            "indexes",
-            _searchIdxConfig.IndexName,
-            $"docs?api-version=2021-04-30-Preview&{queryString}");
-
-        return this.HttpProxyAsync(url, _searchProxyOptions);
     }
 }

@@ -21,7 +21,7 @@ public class CategoryGroupingController : ControllerBase
     private readonly IServiceBusService _serviceBusService;
     private readonly IRebuildCheckpointQueueService _rebuildCheckpointQueueService;
     private readonly CategorySearchIndexConfiguration _searchIdxConfig;
-    private readonly ILogger<CategoryController> _logger;
+    private readonly ILogger<CategoryGroupingController> _logger;
 
     private readonly HttpProxyOptions _searchProxyOptions;
 
@@ -30,7 +30,7 @@ public class CategoryGroupingController : ControllerBase
         IServiceBusService serviceBusService,
         IRebuildCheckpointQueueService rebuildCheckpointQueueService,
         IOptions<CategorySearchIndexConfiguration> searchIdxConfig,
-        ILogger<CategoryController> logger)
+        ILogger<CategoryGroupingController> logger)
     {
         _mediator = mediator;
         _serviceBusService = serviceBusService;
