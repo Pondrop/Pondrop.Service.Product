@@ -24,6 +24,7 @@ public class CreateCategoryCommandHandlerTests
 {
     private readonly Mock<IOptions<CategoryUpdateConfiguration>> _CategoryUpdateConfigMock;
     private readonly Mock<IEventRepository> _eventRepositoryMock;
+    private readonly Mock<ICheckpointRepository<CategoryEntity>> _checkpointRepositoryMock;
     private readonly Mock<IDaprService> _daprServiceMock;
     private readonly Mock<IUserService> _userServiceMock;
     private readonly Mock<IMapper> _mapperMock;
@@ -34,6 +35,7 @@ public class CreateCategoryCommandHandlerTests
     {
         _CategoryUpdateConfigMock = new Mock<IOptions<CategoryUpdateConfiguration>>();
         _eventRepositoryMock = new Mock<IEventRepository>();
+        _checkpointRepositoryMock = new Mock<ICheckpointRepository<CategoryEntity>>();
         _daprServiceMock = new Mock<IDaprService>();
         _userServiceMock = new Mock<IUserService>();
         _mapperMock = new Mock<IMapper>();
@@ -177,6 +179,7 @@ public class CreateCategoryCommandHandlerTests
     private CreateCategoryCommandHandler GetCommandHandler() =>
         new CreateCategoryCommandHandler(
             _CategoryUpdateConfigMock.Object,
+            _checkpointRepositoryMock.Object,
             _eventRepositoryMock.Object,
             _daprServiceMock.Object,
             _userServiceMock.Object,

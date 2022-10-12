@@ -15,12 +15,14 @@ public class CreateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
 {
     private readonly IEventRepository _eventRepository;
     private readonly IMapper _mapper;
+    private readonly ICheckpointRepository<CategoryEntity> _checkpointRepository;
     private readonly IUserService _userService;
     private readonly IValidator<CreateCategoryCommand> _validator;
     private readonly ILogger<CreateCategoryCommandHandler> _logger;
 
     public CreateCategoryCommandHandler(
         IOptions<CategoryUpdateConfiguration> categoryUpdateConfig,
+        ICheckpointRepository<CategoryEntity> checkpointRepository,
         IEventRepository eventRepository,
         IDaprService daprService,
         IUserService userService,
@@ -30,6 +32,7 @@ public class CreateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
     {
         _eventRepository = eventRepository;
         _mapper = mapper;
+        _checkpointRepository = checkpointRepository;
         _userService = userService;
         _validator = validator;
         _logger = logger;
@@ -50,14 +53,18 @@ public class CreateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
 
         try
         {
+            var duplicateMessage = $"Possible category match found";
+            var existingCategory = await GetExistingCategoryByName(command.Name);
+            if (existingCategory != null && existingCategory.Count > 0)
+                return Result<CategoryRecord>.Error(duplicateMessage);
 
 
             var categoryEntity = new CategoryEntity(
-                command.Name,
-                command.Type,
-                command.PublicationLifecycleId,
-                _userService.CurrentUserId());
-           
+                    command.Name,
+                    command.Type,
+                    command.PublicationLifecycleId,
+                    _userService.CurrentUserId());
+
             var success = await _eventRepository.AppendEventsAsync(categoryEntity.StreamId, 0, categoryEntity.GetEvents());
 
             await Task.WhenAll(
@@ -75,6 +82,26 @@ public class CreateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
 
         return result;
     }
+
+    private async Task<List<CategoryEntity>> GetExistingCategoryByName(string categoryName)
+    {
+        const string categoryNameKey = "@categoryName";
+
+        var conditions = new List<string>();
+        var parameters = new Dictionary<string, string>();
+
+        conditions.Add($"c.name = {categoryNameKey}");
+        parameters.Add(categoryNameKey, categoryName);
+
+        if (!conditions.Any())
+            return new List<CategoryEntity>(0);
+
+        var sqlQueryText = $"SELECT * FROM c WHERE {string.Join(" AND ", conditions)}";
+
+        var affectedProductCategories = await _checkpointRepository.QueryAsync(sqlQueryText, parameters);
+        return affectedProductCategories;
+    }
+
 
     private static string FailedToCreateMessage(CreateCategoryCommand command) =>
         $"Failed to create category\nCommand: '{JsonConvert.SerializeObject(command)}'";

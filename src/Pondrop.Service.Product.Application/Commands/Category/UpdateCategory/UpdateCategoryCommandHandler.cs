@@ -57,8 +57,17 @@ public class UpdateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
             var categoryEntity = await _categoryCheckpointRepository.GetByIdAsync(command.Id);
             categoryEntity ??= await GetFromStreamAsync(command.Id);
 
+
             if (categoryEntity is not null)
             {
+                if (!string.IsNullOrEmpty(command.Name))
+                {
+                    var duplicateMessage = $"Possible category match found";
+                    var existingCategory = await GetExistingCategoryByName(command.Id, command.Name);
+                    if (existingCategory != null && existingCategory.Count > 0)
+                        return Result<CategoryRecord>.Error(duplicateMessage);
+                }
+
                 var evtPayload = new UpdateCategory(
                     command.Name,
                     command.Type,
@@ -93,7 +102,26 @@ public class UpdateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
 
         return result;
     }
+    private async Task<List<CategoryEntity>> GetExistingCategoryByName(Guid id, string categoryName)
+    {
+        const string categoryNameKey = "@categoryName";
+        const string categoryIdKey = "@categoryId";
 
+        var conditions = new List<string>();
+        var parameters = new Dictionary<string, string>();
+
+        conditions.Add($"c.name = {categoryNameKey} AND c.id != {categoryIdKey}");
+        parameters.Add(categoryNameKey, categoryName);
+        parameters.Add(categoryIdKey, id.ToString());
+
+        if (!conditions.Any())
+            return new List<CategoryEntity>(0);
+
+        var sqlQueryText = $"SELECT * FROM c WHERE {string.Join(" AND ", conditions)}";
+
+        var affectedProductCategories = await _categoryCheckpointRepository.QueryAsync(sqlQueryText, parameters);
+        return affectedProductCategories;
+    }
     private static string FailedToCreateMessage(UpdateCategoryCommand command) =>
         $"Failed to update category\nCommand: '{JsonConvert.SerializeObject(command)}'";
 }
