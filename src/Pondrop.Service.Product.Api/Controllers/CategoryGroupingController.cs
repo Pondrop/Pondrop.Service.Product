@@ -20,7 +20,7 @@ public class CategoryGroupingController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IServiceBusService _serviceBusService;
     private readonly IRebuildCheckpointQueueService _rebuildCheckpointQueueService;
-    private readonly CategorySearchIndexConfiguration _searchIdxConfig;
+    private readonly SearchIndexConfiguration _searchIdxConfig;
     private readonly ILogger<CategoryGroupingController> _logger;
 
     private readonly HttpProxyOptions _searchProxyOptions;
@@ -29,7 +29,7 @@ public class CategoryGroupingController : ControllerBase
         IMediator mediator,
         IServiceBusService serviceBusService,
         IRebuildCheckpointQueueService rebuildCheckpointQueueService,
-        IOptions<CategorySearchIndexConfiguration> searchIdxConfig,
+        IOptions<SearchIndexConfiguration> searchIdxConfig,
         ILogger<CategoryGroupingController> logger)
     {
         _mediator = mediator;
@@ -136,7 +136,7 @@ public class CategoryGroupingController : ControllerBase
         var url = Path.Combine(
             _searchIdxConfig.BaseUrl,
             "indexes",
-            _searchIdxConfig.IndexName,
+            _searchIdxConfig.CategoryGroupingIndexName,
             $"docs?api-version=2021-04-30-Preview&{queryString}");
 
         return this.HttpProxyAsync(url, _searchProxyOptions);

@@ -143,8 +143,7 @@ services.AddFluentValidation(config =>
 
 services.Configure<CosmosConfiguration>(configuration.GetSection(CosmosConfiguration.Key));
 services.Configure<ServiceBusConfiguration>(configuration.GetSection(ServiceBusConfiguration.Key));
-services.Configure<CategorySearchIndexConfiguration>(configuration.GetSection(CategorySearchIndexConfiguration.Key));
-services.Configure<ProductSearchIndexConfiguration>(configuration.GetSection(ProductSearchIndexConfiguration.Key));
+services.Configure<SearchIndexConfiguration>(configuration.GetSection(SearchIndexConfiguration.Key));
 services.Configure<CategoryUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(CategoryUpdateConfiguration.Key));
 services.Configure<CategoryUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(CategoryUpdateConfiguration.Key));
 services.Configure<ProductUpdateConfiguration>(configuration.GetSection(DaprEventTopicConfiguration.Key).GetSection(ProductUpdateConfiguration.Key));
