@@ -8,5 +8,7 @@ public class UpdateCategoryGroupingCommandHandlerValidator : AbstractValidator<U
     public UpdateCategoryGroupingCommandHandlerValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.HigherLevelCategoryId).NotEmpty();
+        RuleFor(x => x.LowerLevelCategoryId).NotEmpty();
     }
 }

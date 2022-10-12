@@ -29,7 +29,7 @@ namespace Pondrop.Service.Product.Api.Tests
         private readonly Mock<IServiceBusService> _serviceBusServiceMock;
         private readonly Mock<IRebuildCheckpointQueueService> _rebuildMaterializeViewQueueServiceMock;
         private readonly Mock<ILogger<ProductCategoryController>> _loggerMock;
-        private readonly Mock<IOptions<ProductCategorySearchIndexConfiguration>> _searchIdxConfigMock;
+        private readonly Mock<IOptions<SearchIndexConfiguration>> _searchIdxConfigMock;
 
         public ProductCategoryControllerTests()
         {
@@ -37,7 +37,7 @@ namespace Pondrop.Service.Product.Api.Tests
             _serviceBusServiceMock = new Mock<IServiceBusService>();
             _rebuildMaterializeViewQueueServiceMock = new Mock<IRebuildCheckpointQueueService>();
             _loggerMock = new Mock<ILogger<ProductCategoryController>>();
-            _searchIdxConfigMock = new Mock<IOptions<ProductCategorySearchIndexConfiguration>>();
+            _searchIdxConfigMock = new Mock<IOptions<SearchIndexConfiguration>>();
         }
 
         [Fact]

@@ -13,6 +13,5 @@ public class CreateCategoryGroupingCommandHandlerValidator : AbstractValidator<C
         
         RuleFor(x => x.HigherLevelCategoryId).NotEmpty();
         RuleFor(x => x.LowerLevelCategoryId).NotEmpty();
-        RuleFor(x => x.Description).NotEmpty();
     }
 }

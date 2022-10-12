@@ -27,7 +27,7 @@ namespace Pondrop.Service.Product.Api.Tests
         private readonly Mock<IServiceBusService> _serviceBusServiceMock;
         private readonly Mock<IRebuildCheckpointQueueService> _rebuildMaterializeViewQueueServiceMock;
         private readonly Mock<ILogger<CategoryGroupingController>> _loggerMock;
-        private readonly Mock<IOptions<CategorySearchIndexConfiguration>> _searchIdxConfigMock;
+        private readonly Mock<IOptions<SearchIndexConfiguration>> _searchIdxConfigMock;
 
         public CategoryGroupingControllerTests()
         {
@@ -35,7 +35,7 @@ namespace Pondrop.Service.Product.Api.Tests
             _serviceBusServiceMock = new Mock<IServiceBusService>();
             _rebuildMaterializeViewQueueServiceMock = new Mock<IRebuildCheckpointQueueService>();
             _loggerMock = new Mock<ILogger<CategoryGroupingController>>();
-            _searchIdxConfigMock = new Mock<IOptions<CategorySearchIndexConfiguration>>();
+            _searchIdxConfigMock = new Mock<IOptions<SearchIndexConfiguration>>();
         }
 
         [Fact]
