@@ -110,8 +110,8 @@ public class UpdateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
         var conditions = new List<string>();
         var parameters = new Dictionary<string, string>();
 
-        conditions.Add($"c.name = {categoryNameKey} AND c.id != {categoryIdKey}");
-        parameters.Add(categoryNameKey, categoryName);
+        conditions.Add($"LOWER(c.name) = {categoryNameKey} AND c.id != {categoryIdKey}");
+        parameters.Add(categoryNameKey, categoryName.ToLower());
         parameters.Add(categoryIdKey, id.ToString());
 
         if (!conditions.Any())

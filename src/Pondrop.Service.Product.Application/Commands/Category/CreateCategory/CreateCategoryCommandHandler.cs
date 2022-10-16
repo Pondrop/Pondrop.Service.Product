@@ -90,8 +90,8 @@ public class CreateCategoryCommandHandler : DirtyCommandHandler<CategoryEntity, 
         var conditions = new List<string>();
         var parameters = new Dictionary<string, string>();
 
-        conditions.Add($"c.name = {categoryNameKey}");
-        parameters.Add(categoryNameKey, categoryName);
+        conditions.Add($"LOWER(c.name) = {categoryNameKey}");
+        parameters.Add(categoryNameKey, categoryName.ToLower());
 
         if (!conditions.Any())
             return new List<CategoryEntity>(0);
