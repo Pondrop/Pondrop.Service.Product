@@ -64,6 +64,18 @@ _logger = logger;
             (ex, msg) => new BadRequestObjectResult(msg));
     }
 
+    [HttpGet("/ParentCategories")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAllParentCategories()
+    {
+        var result = await _mediator.Send(new GetAllParentCategoriesQuery());
+        return result.Match<IActionResult>(
+            i => new OkObjectResult(i),
+            (ex, msg) => new BadRequestObjectResult(msg));
+    }
+
     [HttpGet]
     [Route("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
