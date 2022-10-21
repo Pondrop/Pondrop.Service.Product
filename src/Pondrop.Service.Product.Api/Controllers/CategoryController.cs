@@ -1,5 +1,7 @@
 ﻿using AspNetCore.Proxy;
 using AspNetCore.Proxy.Options;
+using Azure;
+using Azure.Search.Documents.Indexes;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +24,7 @@ public class CategoryController : ControllerBase
     private readonly IRebuildCheckpointQueueService _rebuildCheckpointQueueService;
     private readonly SearchIndexConfiguration _searchIdxConfig;
     private readonly ILogger<CategoryController> _logger;
-
+    private readonly SearchIndexerClient _searchIndexerClient;
     private readonly HttpProxyOptions _searchProxyOptions;
 
     public CategoryController(
@@ -37,6 +39,8 @@ public class CategoryController : ControllerBase
         _rebuildCheckpointQueueService = rebuildCheckpointQueueService;
         _searchIdxConfig = searchIdxConfig.Value;
         _logger = logger;
+
+        _searchIndexerClient = new SearchIndexerClient(new Uri(_searchIdxConfig.BaseUrl), new AzureKeyCredential(_searchIdxConfig.ManagementKey));
 
         _searchProxyOptions = HttpProxyOptionsBuilder
             .Instance
@@ -140,5 +144,19 @@ public class CategoryController : ControllerBase
             $"docs?api-version=2021-04-30-Preview&{queryString}");
 
         return this.HttpProxyAsync(url, _searchProxyOptions);
+    }
+
+    [HttpGet]
+    [Route("indexer/run")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RunIndexer()
+    {
+        var response = await _searchIndexerClient.RunIndexerAsync(_searchIdxConfig.CategoryIndexerName);
+
+        if (response.IsError)
+            return new BadRequestObjectResult(response.ReasonPhrase);
+
+        return new AcceptedResult();
     }
 }
