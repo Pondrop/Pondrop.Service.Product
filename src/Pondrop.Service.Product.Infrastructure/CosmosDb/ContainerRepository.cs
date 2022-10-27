@@ -130,9 +130,14 @@ public class ContainerRepository<T> : IContainerRepository<T>
         return default;
     }
 
-    public async Task<List<T>> QueryAsync(string sqlQueryText, Dictionary<string, string>? parameters = null)
+    public Task<List<T>> QueryAsync(string sqlQueryText, Dictionary<string, string>? parameters = null)
     {
-        var list = new List<T>();
+        return QueryAsync<T>(sqlQueryText, parameters);
+    }
+    
+    public async Task<List<TEntity>> QueryAsync<TEntity>(string sqlQueryText, Dictionary<string, string>? parameters = null)
+    {
+        var list = new List<TEntity>();
 
         if (!string.IsNullOrEmpty(sqlQueryText) && await IsConnectedAsync())
         {
@@ -146,7 +151,7 @@ public class ContainerRepository<T> : IContainerRepository<T>
                 }
             }
 
-            var iterator = _container!.GetItemQueryIterator<T>(queryDefinition);
+            var iterator = _container!.GetItemQueryIterator<TEntity>(queryDefinition);
             while (iterator.HasMoreResults)
             {
                 var page = await iterator.ReadNextAsync();

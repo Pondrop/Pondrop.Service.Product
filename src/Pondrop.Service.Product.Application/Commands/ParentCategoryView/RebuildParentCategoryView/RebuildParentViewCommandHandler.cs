@@ -51,30 +51,36 @@ public class RebuildParentCategoryViewCommandHandler : IRequestHandler<RebuildPa
 
             await Task.WhenAll(categoryGroupingsTask, categoriesTask);
 
-            var categoryGroupings = categoryGroupingsTask.Result;
+            var categories = categoriesTask.Result;
+            var categoryGroupings = categoryGroupingsTask.Result
+                .GroupBy(i => i.HigherLevelCategoryId)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
-            var tasks = categoriesTask.Result.Select(async i =>
+            var upsertTasks = categories.Select(async i =>
             {
                 var success = false;
 
                 try
                 {
-                    var lowerCategories = categoryGroupings?.Where(c => c.HigherLevelCategoryId == i.Id);
+                    categoryGroupings.TryGetValue(i.Id, out var lowerCategories);
 
                     var productCount = 0;
-                    if (lowerCategories != null)
+                    if (lowerCategories?.Count > 0)
                     {
-                        foreach (var category in lowerCategories)
-                        {
-                            var productCategories = await _productCategoryEntityCheckpointRepository.QueryAsync($"SELECT * FROM c WHERE c.categoryId = '{category.LowerLevelCategoryId}'");
-                            productCount += productCategories?.Count() ?? 0;
-                        }
+                        var ids = string.Join(", ", lowerCategories
+                            .Select(i => i.LowerLevelCategoryId)
+                            .Distinct()
+                            .Select(i => $"'{i}'"));
+                        
+                        var countResult = await _productCategoryEntityCheckpointRepository.QueryAsync<int>(
+                            $"SELECT VALUE COUNT(1) FROM c WHERE c.categoryId IN ({ids})");
+                        
+                        productCount = countResult.FirstOrDefault();
                     }
 
                     var parentProductCategoryView = new ParentCategoryViewRecord(i.Id, i.Name, productCount);
-
-                    var result = await _containerRepository.UpsertAsync(parentProductCategoryView);
-                    success = result != null;
+                    var resultEntity = await _containerRepository.UpsertAsync(parentProductCategoryView);
+                    success = resultEntity is not null;
                 }
                 catch (Exception ex)
                 {
@@ -84,9 +90,8 @@ public class RebuildParentCategoryViewCommandHandler : IRequestHandler<RebuildPa
                 return success;
             }).ToList();
 
-            await Task.WhenAll(tasks);
-
-            result = Result<int>.Success(tasks.Count(t => t.Result));
+            await Task.WhenAll(upsertTasks);
+            result = Result<int>.Success(upsertTasks.Count(t => t.Result));
         }
         catch (Exception ex)
         {

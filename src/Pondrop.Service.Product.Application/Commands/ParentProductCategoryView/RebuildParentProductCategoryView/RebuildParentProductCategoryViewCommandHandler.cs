@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Type;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,6 +11,8 @@ using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Domain.Models.Product;
 using Pondrop.Service.Product.Domain.Models.ProductCategory;
 using Pondrop.Service.ProductCategory.Domain.Models;
+using System.Diagnostics;
+using DateTime = System.DateTime;
 
 namespace Pondrop.Service.Product.Application.Commands;
 
@@ -56,62 +59,100 @@ public class RebuildParentProductCategoryViewCommandHandler : IRequestHandler<Re
 
         try
         {
+            var statusMsgs = new List<String>();
+            var sw = new Stopwatch();
+            sw.Start();
+            
             var categoryGroupingsTask = _categoryGroupingContainerRepository.GetAllAsync();
             var productWithCategoryTask = _productWithCategoryContainerRepository.GetAllAsync();
+            var barcodesTask = _barcodeCheckpointRepository.GetAllAsync();
 
-            await Task.WhenAll(categoryGroupingsTask, productWithCategoryTask);
+            await Task.WhenAll(categoryGroupingsTask, productWithCategoryTask, barcodesTask);
 
-           var categoryGroupings = categoryGroupingsTask.Result;
+           var categoryLowerLookup = categoryGroupingsTask.Result
+               .GroupBy(i => i.LowerLevelCategoryId)
+               .ToDictionary(g => g.Key, i => i.First().HigherLevelCategoryId);
+           var productWithCategories = productWithCategoryTask.Result;
+           
+           var barcodeLookup = barcodesTask.Result
+               .GroupBy(i => i.ProductId)
+               .ToDictionary(g => g.Key, g => g.First());
 
-            var tasks = productWithCategoryTask.Result.Select(async i =>
+           statusMsgs.Add($"Got required data: {sw.Elapsed.TotalSeconds / 60}mins");
+           
+           var upsertTasks = new List<Task<bool>>();
+
+           for (var i = 0; i < productWithCategories.Count; i++)
+           {
+               System.Diagnostics.Debug.WriteLine($"# Starting ParentProductCategoryView task {i + 1} of {productWithCategories.Count}");
+               var product = productWithCategories[i];
+               
+               var task = Task.Run(async () =>
+               {
+                   var success = false;
+
+                   try
+                   {
+                       Guid? parentCategoryId = null;
+                       if (product.Categories?.Count > 0)
+                       {
+                           categoryLowerLookup.TryGetValue(product.Categories.FirstOrDefault()?.Id ?? Guid.Empty, out var higherLevelCategoryId);
+                           parentCategoryId = higherLevelCategoryId;
+                       }
+
+                       barcodeLookup.TryGetValue(product.Id, out var barcodes);
+                       var barcodeNumber = barcodes?.BarcodeNumber;
+
+                       var categoryNames = product.Categories?.Count > 0
+                           ? string.Join(',', product.Categories.Select(s => s.Name))
+                           : string.Empty;
+
+                       var parentProductCategoryView = new ParentProductCategoryViewRecord(
+                           product.Id,
+                           parentCategoryId,
+                           product.Name,
+                           barcodeNumber,
+                           categoryNames,
+                           product.Categories);
+
+                       var upsertEntity = await _containerRepository.UpsertAsync(parentProductCategoryView);
+                       success = upsertEntity is not null;
+                   }
+                   catch (Exception ex)
+                   {
+                       _logger.LogError(ex, $"Failed to update parentProductCategoryView for '{product.Id}'");
+                   }
+
+                   return success;
+               }, cancellationToken);
+               
+               upsertTasks.Add(task);
+
+               const int batchSize = 256;
+               if (upsertTasks.Count % batchSize == 0)
+               {
+                   System.Diagnostics.Debug.WriteLine($"## Waiting for previous ParentProductCategoryView tasks {upsertTasks.Count} of {productWithCategories.Count}");
+                   await Task.WhenAll(upsertTasks.TakeLast(batchSize));
+               }
+           }
+           
+            await Task.WhenAll(upsertTasks);
+            result = Result<int>.Success(upsertTasks.Count(t => t.Result));
+            
+            sw.Stop();
+            statusMsgs.Add($"Finished: {sw.Elapsed.TotalSeconds / 60d}mins");
+            
+            foreach (var i in statusMsgs)
             {
-                var success = false;
-
-                try
-                {
-                    var product = await _productCheckpointRepository.GetByIdAsync(i.Id);
-
-                    Guid? parentCategoryId = null;
-                    if (i.Categories != null && i.Categories.Count() > 0)
-                    {
-
-                        var parentCategory = categoryGroupings?.FirstOrDefault(c => c.LowerLevelCategoryId == i.Categories.FirstOrDefault()?.Id);
-                        parentCategoryId = parentCategory?.HigherLevelCategoryId;
-                    }
-
-                    string? barcodeNumber = null;
-                    if (product != null)
-                    {
-                        var barcode = await _barcodeCheckpointRepository.QueryAsync($"SELECT * FROM c where c.productId = '{product.Id}'");
-                        barcodeNumber = barcode?.FirstOrDefault()?.BarcodeNumber;
-                    }
-
-                    var categoryNames = i.Categories != null && i.Categories.Count > 0 ? string.Join(',', i.Categories.Select(s => s.Name)) : string.Empty;
-
-                    var parentProductCategoryView = new ParentProductCategoryViewRecord(i.Id, parentCategoryId, i.Name, barcodeNumber, categoryNames, i.Categories);
-
-                    var result = await _containerRepository.UpsertAsync(parentProductCategoryView);
-
-                    success = result != null;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Failed to update parentProductCategoryView for '{i.Id}'");
-                }
-
-                return success;
-            }).ToList();
-
-            await Task.WhenAll(tasks);
-
-            result = Result<int>.Success(tasks.Count(t => t.Result));
+                System.Diagnostics.Debug.WriteLine(i);
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Failed to rebuild category view");
             result = Result<int>.Error(ex);
         }
-
+        
         return result;
     }
 }
