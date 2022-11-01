@@ -6,6 +6,6 @@ namespace Pondrop.Service.Product.Application.Commands;
 
 public class UpdateParentProductCategoryViewCommand : IRequest<Result<int>>
 {
-    public Guid? CategoryGroupingId { get; init; } = null;
-    public Guid? ProductCategoryId { get; init; } = null;
+    public Guid? CategoryId { get; init; } = null;
+    public Guid? ProductId { get; init; } = null;
 }

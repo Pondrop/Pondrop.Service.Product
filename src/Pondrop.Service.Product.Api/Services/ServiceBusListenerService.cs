@@ -108,7 +108,6 @@ public class ServiceBusListenerService : IServiceBusListenerService
                                     await mediator!.Send(new UpdateCategoryWithProductsViewCommand() {  CategoryId = category.Id });
                                     await mediator!.Send(new UpdateProductWithCategoriesViewCommand() {  CategoryId = category.Id });
                                     await mediator!.Send(new UpdateCategoryGroupingViewCommand() { CategoryId = category.Id });
-
                                     break;
                                 case UpdateProductCheckpointByIdCommand product:
                                     await mediator!.Send(new UpdateCategoryWithProductsViewCommand() { ProductId = product.Id });
