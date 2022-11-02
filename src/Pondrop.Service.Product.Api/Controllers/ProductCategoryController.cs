@@ -85,6 +85,15 @@ _logger = logger;
     public async Task<IActionResult> GetProductCategoryById([FromRoute] Guid id)
     {
         var result = await _mediator.Send(new GetProductCategoryByIdQuery() { Id = id });
+
+        if (result.IsSuccess)
+        {
+            await _mediator.Send(new UpdateCategoryWithProductsViewCommand() { ProductCategoryId = id });
+            //await _mediator.Send(new UpdateParentProductCategoryViewCommand() { ProductCategoryId = id });
+            await _mediator.Send(new UpdateProductWithCategoriesViewCommand() { ProductCategoryId = id });
+            //await _mediator.Send(new UpdateParentCategoryViewCommand() { ProductCategoryId = id });
+        }
+        
         return result.Match<IActionResult>(
             i => i is not null ? new OkObjectResult(i) : new NotFoundResult(),
             (ex, msg) => new BadRequestObjectResult(msg));
@@ -101,7 +110,12 @@ _logger = logger;
         return await result.MatchAsync<IActionResult>(
             async i =>
             {
-                await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand() { Id = i!.Id });
+                await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand()
+                {
+                    Id = i!.Id,
+                    ProductId = i.ProductId,
+                    CategoryId = i.CategoryId,
+                });
                 return StatusCode(StatusCodes.Status201Created, i);
             },
             (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
@@ -118,7 +132,12 @@ _logger = logger;
         return await result.MatchAsync<IActionResult>(
             async i =>
             {
-                await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand() { Id = i!.Id });
+                await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand()
+                {
+                    Id = i!.Id,
+                    ProductId = i.ProductId,
+                    CategoryId = i.CategoryId,
+                });
                 return new OkObjectResult(i);
             },
             (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));

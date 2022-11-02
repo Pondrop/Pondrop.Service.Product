@@ -9,8 +9,5 @@ public class UpdateProductCategoryCommand : IRequest<Result<ProductCategoryRecor
 {
     public Guid Id { get; init; } = Guid.Empty;
 
-    public Guid? ProductId { get; init; } = null;
-    public Guid? CategoryId { get; init; } = null;
-
     public string? PublicationLifecycleId { get; init; } = null;
 }
