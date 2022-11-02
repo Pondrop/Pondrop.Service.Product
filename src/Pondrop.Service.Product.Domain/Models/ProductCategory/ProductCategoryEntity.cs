@@ -89,8 +89,6 @@ public record ProductCategoryEntity : EventEntity
         var oldCategoryId = CategoryId;
         var oldPublicationLifecycleId = PublicationLifecycleId;
 
-        ProductId = update.ProductId ?? Guid.Empty;
-        CategoryId = update.CategoryId ?? CategoryId;
         PublicationLifecycleId = update.PublicationLifecycleId ?? PublicationLifecycleId;
 
         if (oldProductId != ProductId ||

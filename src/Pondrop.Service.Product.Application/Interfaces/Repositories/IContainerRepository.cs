@@ -11,6 +11,8 @@ public interface IContainerRepository<T>
 
     Task<List<T>> GetAllAsync();
     Task<T?> GetByIdAsync(Guid id);
+    Task<List<T>> GetByIdsAsync(IEnumerable<Guid> id);
 
     Task<List<T>> QueryAsync(string sqlQueryText, Dictionary<string, string>? parameters = null);
+    Task<List<TEntity>> QueryAsync<TEntity>(string sqlQueryText, Dictionary<string, string>? parameters = null);
 }

@@ -62,8 +62,6 @@ public class UpdateProductCategoryCommandHandler : DirtyCommandHandler<ProductCa
             if (ProductCategoryEntity is not null)
             {
                 var evtPayload = new UpdateProductCategory(
-                    command.CategoryId ?? Guid.Empty,
-                    command.ProductId ?? Guid.Empty,
                     command.PublicationLifecycleId);
                 var createdBy = _userService.CurrentUserId();
 

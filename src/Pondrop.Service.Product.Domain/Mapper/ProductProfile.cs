@@ -10,6 +10,5 @@ public class ProductProfile : Profile
     {
         CreateMap<ProductEntity, ProductRecord>();
         CreateMap<ProductEntity, ProductViewRecord>();
-        CreateMap<ProductEntity, ProductWithCategoryViewRecord>();
     }
 }

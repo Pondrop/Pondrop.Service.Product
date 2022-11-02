@@ -6,4 +6,6 @@ namespace Pondrop.Service.Product.Application.Commands;
 
 public class UpdateCategoryGroupingCheckpointByIdCommand : UpdateCheckpointByIdCommand<Result<CategoryGroupingRecord>>
 {
+    public Guid HigherCategoryId { get; set; }
+    public Guid LowerCategoryId { get; set; }
 }

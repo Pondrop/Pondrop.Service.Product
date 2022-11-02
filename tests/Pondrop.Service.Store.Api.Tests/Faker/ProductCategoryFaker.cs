@@ -74,8 +74,6 @@ public static class ProductCategoryFaker
     {
         var faker = new Faker<UpdateProductCategoryCommand>()
              .RuleFor(x => x.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.CategoryId, f => f.PickRandom(CategoryIds))
-            .RuleFor(x => x.ProductId, f => f.PickRandom(ProductIds))
             .RuleFor(x => x.PublicationLifecycleId, f => f.PickRandom(Ids));
         return faker.Generate();
     }

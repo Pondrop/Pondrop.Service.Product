@@ -42,7 +42,7 @@ public class UpdateParentCategoryViewCommandHandler : IRequestHandler<UpdatePare
 
     public async Task<Result<int>> Handle(UpdateParentCategoryViewCommand command, CancellationToken cancellationToken)
     {
-        if (!command.CategoryGroupingId.HasValue && !command.ProductCategoryId.HasValue)
+        if (!command.CategoryId.HasValue && !command.ProductId.HasValue)
             return Result<int>.Success(0);
 
         var result = default(Result<int>);

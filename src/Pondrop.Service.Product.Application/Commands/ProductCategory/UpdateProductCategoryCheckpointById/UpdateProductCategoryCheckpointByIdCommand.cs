@@ -8,4 +8,6 @@ namespace Pondrop.Service.Product.Application.Commands;
 
 public class UpdateProductCategoryCheckpointByIdCommand : UpdateCheckpointByIdCommand<Result<ProductCategoryRecord>>
 {
+    public Guid ProductId { get; set; }
+    public Guid CategoryId { get; set; }
 }

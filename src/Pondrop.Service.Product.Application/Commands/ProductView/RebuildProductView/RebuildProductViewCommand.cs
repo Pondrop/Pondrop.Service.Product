@@ -4,6 +4,6 @@ using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Commands;
 
-public class RebuildParentProductCategoryViewCommand : IRequest<Result<int>>
+public class RebuildProductViewCommand : IRequest<Result<int>>
 {
 }

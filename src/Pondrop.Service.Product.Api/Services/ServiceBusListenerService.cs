@@ -106,24 +106,21 @@ public class ServiceBusListenerService : IServiceBusListenerService
                             {
                                 case UpdateCategoryCheckpointByIdCommand category:
                                     await mediator!.Send(new UpdateCategoryWithProductsViewCommand() {  CategoryId = category.Id });
-                                    await mediator!.Send(new UpdateProductWithCategoriesViewCommand() {  CategoryId = category.Id });
                                     await mediator!.Send(new UpdateCategoryGroupingViewCommand() { CategoryId = category.Id });
-
+                                    await mediator!.Send(new UpdateProductViewCommand() { CategoryId = category.Id });
                                     break;
                                 case UpdateProductCheckpointByIdCommand product:
-                                    await mediator!.Send(new UpdateCategoryWithProductsViewCommand() { ProductId = product.Id });
-                                    await mediator!.Send(new UpdateProductWithCategoriesViewCommand() { ProductId = product.Id });
+                                    await mediator!.Send(new UpdateCategoryWithProductsViewCommand() { ProductId = product.Id }); 
+                                    await mediator!.Send(new UpdateProductViewCommand() { ProductId = product.Id });
+
                                     break;
                                 case UpdateProductCategoryCheckpointByIdCommand productCategory:
                                     await mediator!.Send(new UpdateCategoryWithProductsViewCommand() { ProductCategoryId = productCategory.Id });
-                                    //await mediator!.Send(new UpdateParentProductCategoryViewCommand() { ProductCategoryId = productCategory.Id });
-                                    await mediator!.Send(new UpdateProductWithCategoriesViewCommand() { ProductCategoryId = productCategory.Id });
-                                    //await mediator!.Send(new UpdateParentCategoryViewCommand() { ProductCategoryId = productCategory.Id });
+                                    await mediator!.Send(new UpdateProductViewCommand() { ProductId = productCategory.ProductId });
                                     break;
                                 case UpdateCategoryGroupingCheckpointByIdCommand categoryGrouping:
-                                    //await mediator!.Send(new UpdateParentCategoryViewCommand() { CategoryGroupingId = categoryGrouping.Id });
-                                    //await mediator!.Send(new UpdateParentProductCategoryViewCommand() { CategoryGroupingId = categoryGrouping.Id });
                                     await mediator!.Send(new UpdateCategoryGroupingViewCommand() { CategoryGroupingId = categoryGrouping.Id });
+                                    await mediator!.Send(new UpdateProductViewCommand() { CategoryId = categoryGrouping.LowerCategoryId });
                                     break;
                             }
                         }

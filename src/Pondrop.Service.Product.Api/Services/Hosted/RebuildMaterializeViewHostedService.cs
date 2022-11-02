@@ -33,17 +33,18 @@ public class RebuildMaterializeViewHostedService : BackgroundService
 
                 switch (command)
                 {
+                    case RebuildProductCheckpointCommand product:
+                        await mediator!.Send(new RebuildProductViewCommand(), stoppingToken);
+                        break;
                     case RebuildCategoryCheckpointCommand category:
                         await mediator!.Send(new RebuildCategoryViewCommand(), stoppingToken);
                         await mediator!.Send(new RebuildParentCategoryViewCommand(), stoppingToken);
                         break;
                     case RebuildCategoryGroupingCheckpointCommand categoryGrouping:
                         await mediator!.Send(new RebuildCategoryGroupingViewCommand(), stoppingToken);
-                        await mediator!.Send(new RebuildParentCategoryViewCommand(), stoppingToken);
                         break;
                     case RebuildProductCategoryCheckpointCommand productCategory:
                         await mediator!.Send(new RebuildParentCategoryViewCommand(), stoppingToken);
-                       //await mediator!.Send(new RebuildParentProductCategoryViewCommand(), stoppingToken);
                         break;
                 }
             }

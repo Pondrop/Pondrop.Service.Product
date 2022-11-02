@@ -4,9 +4,8 @@ using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Commands;
 
-public class UpdateProductWithCategoriesViewCommand : IRequest<Result<int>>
+public class UpdateProductViewCommand : IRequest<Result<int>>
 {
     public Guid? CategoryId { get; init; } = null;
     public Guid? ProductId { get; init; } = null;
-    public Guid? ProductCategoryId { get; init; } = null;
 }

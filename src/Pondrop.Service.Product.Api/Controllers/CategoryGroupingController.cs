@@ -88,7 +88,7 @@ public class CategoryGroupingController : ControllerBase
         return await result.MatchAsync<IActionResult>(
             async i =>
             {
-                await _serviceBusService.SendMessageAsync(new UpdateCategoryGroupingCheckpointByIdCommand() { Id = i!.Id });
+                await _serviceBusService.SendMessageAsync(new UpdateCategoryGroupingCheckpointByIdCommand() { Id = i!.Id , LowerCategoryId = i!.LowerLevelCategoryId});
                 return StatusCode(StatusCodes.Status201Created, i);
             },
             (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
