@@ -152,7 +152,7 @@ public class CategoryGroupingController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RunIndexer()
     {
-        var response = await _searchIndexerClient.RunIndexerAsync(_searchIdxConfig.ProductCategoryIndexerName);
+        var response = await _searchIndexerClient.RunIndexerAsync(_searchIdxConfig.CategoryGroupingIndexerName);
 
         if (response.IsError)
             return new BadRequestObjectResult(response.ReasonPhrase);
