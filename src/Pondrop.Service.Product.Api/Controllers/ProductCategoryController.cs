@@ -38,7 +38,7 @@ public class ProductCategoryController : ControllerBase
         _serviceBusService = serviceBusService;
         _rebuildCheckpointQueueService = rebuildCheckpointQueueService;
         _searchIdxConfig = searchIdxConfig.Value;
-_logger = logger;
+        _logger = logger;
 
         _searchIndexerClient = new SearchIndexerClient(new Uri(_searchIdxConfig.BaseUrl), new AzureKeyCredential(_searchIdxConfig.ManagementKey));
 
@@ -92,7 +92,7 @@ _logger = logger;
             //await _mediator.Send(new UpdateParentProductCategoryViewCommand() { ProductCategoryId = id });
             //await _mediator.Send(new UpdateParentCategoryViewCommand() { ProductCategoryId = id });
         }
-        
+
         return result.Match<IActionResult>(
             i => i is not null ? new OkObjectResult(i) : new NotFoundResult(),
             (ex, msg) => new BadRequestObjectResult(msg));
@@ -104,6 +104,53 @@ _logger = logger;
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProductCategory([FromBody] CreateProductCategoryCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return await result.MatchAsync<IActionResult>(
+            async i =>
+            {
+                await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand()
+                {
+                    Id = i!.Id,
+                    ProductId = i.ProductId,
+                    CategoryId = i.CategoryId,
+                });
+                return StatusCode(StatusCodes.Status201Created, i);
+            },
+            (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
+    }
+
+    [HttpPost]
+    [Route("setcategories")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SetProductCategories([FromBody] SetProductCategoriesCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return await result.MatchAsync<IActionResult>(
+            async i =>
+            {
+                foreach (var item in i)
+                {
+                    await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand()
+                    {
+                        Id = item!.Id,
+                        ProductId = item.ProductId,
+                        CategoryId = item.CategoryId,
+                    });
+                }
+                return StatusCode(StatusCodes.Status201Created, i);
+            },
+            (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
+    }
+
+    [HttpDelete]
+    [Route("delete")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SetProductCategories([FromBody] DeleteProductCategoryCommand command)
     {
         var result = await _mediator.Send(command);
         return await result.MatchAsync<IActionResult>(

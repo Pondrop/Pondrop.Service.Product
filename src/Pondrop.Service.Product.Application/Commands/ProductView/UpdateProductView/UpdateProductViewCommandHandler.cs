@@ -85,11 +85,14 @@ public class
 
             var conditions = new List<string>();
 
-            conditions.Add(!string.IsNullOrEmpty(lowerCatIdString) ? $"c.categoryId IN ({lowerCatIdString})" : string.Empty);
-            conditions.Add(!string.IsNullOrEmpty(productIdString) ? $"c.productId IN ({productIdString})" : string.Empty);
+            if (!string.IsNullOrEmpty(lowerCatIdString))
+                conditions.Add($"c.categoryId IN ({lowerCatIdString})");
+            if (!string.IsNullOrEmpty(productIdString))
+                conditions.Add($"c.productId IN ({productIdString})");
 
-            var productCategoryTask = _productCategoryCheckpointRepository.QueryAsync(
-                    $"SELECT * FROM c WHERE {string.Join(" OR ", conditions)}");
+            var conditionString = $"SELECT * FROM c WHERE {string.Join(" OR ", conditions)}";
+
+            var productCategoryTask = _productCategoryCheckpointRepository.QueryAsync(conditionString);
 
             var barcodesTask = string.IsNullOrEmpty(productIdString) ? null :
                 _barcodeCheckpointRepository.QueryAsync($"SELECT * FROM c WHERE c.productId IN ({productIdString})");
@@ -110,8 +113,9 @@ public class
                 .ToDictionary(g => g.Key, i => i.First());
 
             var productCategoryLookup = productCategoryTask?.Result
+                .Where(p => !p.DeletedUtc.HasValue)
                 .GroupBy(i => i.ProductId)
-                .ToDictionary(g => g.Key, i => i.First().CategoryId);
+                .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
 
             var barcodeLookup = barcodesTask?.Result
                 .GroupBy(i => i.ProductId)
@@ -129,30 +133,88 @@ public class
 
                     try
                     {
-                        var categoryId = Guid.Empty;
-                        CategoryEntity? category = null;
+                        var categoryIds = new List<Guid>();
+                        List<CategoryEntity>? categories = new List<CategoryEntity>();
 
-                        productCategoryLookup?.TryGetValue(product.Id, out categoryId);
-                        categoryLookup?.TryGetValue(categoryId, out category);
+                        productCategoryLookup?.TryGetValue(product.Id, out categoryIds);
+
+                        if (categoryLookup == null)
+                        {
+                            var catIdString = string.Join(", ", categoryIds.Select(i => $"'{i}'"));
+
+                            categoryTask = string.IsNullOrEmpty(catIdString) ? null :
+                                  _categoryCheckpointRepository.QueryAsync(
+                                     $"SELECT * FROM c WHERE c.id IN ({catIdString})");
+
+                            if (categoryTask != null)
+                            {
+                                await Task.WhenAll(categoryTask);
+                                categoryLookup = categoryTask?.Result
+                                   .GroupBy(i => i.Id)
+                                   .ToDictionary(g => g.Key, i => i.First());
+                            }
+                        }
+
+                        foreach (var categoryId in categoryIds)
+                        {
+                            CategoryEntity? category = null;
+                            categoryLookup?.TryGetValue(categoryId, out category);
+                            categories.Add(category);
+                        }
 
 
                         Guid? parentCategoryId = null;
-                        if (category != null)
+                        if (categories != null && categories.Count > 0)
                         {
                             var higherLevelCategoryId = Guid.Empty;
-                            categoryLowerLookup?.TryGetValue(category?.Id ?? Guid.Empty, out higherLevelCategoryId);
+
+                            if (categoryGroupingsTask == null)
+                            {
+                                var lowerCatIdString = string.Join(", ", categoryIds.Select(i => $"'{i}'"));
+
+                                categoryGroupingsTask = string.IsNullOrEmpty(lowerCatIdString) ? null :
+                                               _categoryGroupingContainerRepository.QueryAsync(
+                                                   $"SELECT * FROM c WHERE c.lowerLevelCategoryId IN ({lowerCatIdString})");
+
+                                if (categoryGroupingsTask != null)
+                                {
+                                    await Task.WhenAll(categoryGroupingsTask);
+                                    categoryLowerLookup = categoryGroupingsTask?.Result
+                                    .GroupBy(i => i.LowerLevelCategoryId)
+                                    .ToDictionary(g => g.Key, i => i.First().HigherLevelCategoryId);
+                                }
+                            }
+
+                            categoryLowerLookup?.TryGetValue(categories.FirstOrDefault()?.Id ?? Guid.Empty, out higherLevelCategoryId);
                             parentCategoryId = higherLevelCategoryId;
                         }
 
                         CategoryEntity? parentCategory = null;
                         categoryLookup?.TryGetValue(parentCategoryId ?? Guid.Empty, out parentCategory);
 
+                        if (parentCategory == null)
+                        {
+                            categoryTask = parentCategoryId == null ? null :
+                               _categoryCheckpointRepository.QueryAsync(
+                                  $"SELECT * FROM c WHERE c.id IN ('{parentCategoryId}')");
+
+                            if (categoryTask != null)
+                            {
+                                await Task.WhenAll(categoryTask);
+                                categoryLookup = categoryTask?.Result
+                                   .GroupBy(i => i.Id)
+                                   .ToDictionary(g => g.Key, i => i.First());
+
+                                categoryLookup?.TryGetValue(parentCategoryId ?? Guid.Empty, out parentCategory);
+                            }
+                        }
+
                         BarcodeEntity? barcode = null;
                         barcodeLookup?.TryGetValue(product.Id, out barcode);
                         var barcodeNumber = barcode?.BarcodeNumber;
 
-                        var categoryNames = category?.Id is not null
-                            ? category.Name
+                        var categoryNames = categories is not null && categories.Count > 0
+                            ? String.Join(',', categories.Select(s => s.Name))
                             : string.Empty;
 
                         var productView = new ProductViewRecord(
@@ -172,7 +234,7 @@ public class
                             barcodeNumber,
                             categoryNames,
                             parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : null,
-                            category != null ? new List<CategoryViewRecord>() { new CategoryViewRecord(category.Id, category.Name, category.Type) } : null);
+                            categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : null);
 
                         var upsertEntity = await _containerRepository.UpsertAsync(productView);
                         success = upsertEntity is not null;

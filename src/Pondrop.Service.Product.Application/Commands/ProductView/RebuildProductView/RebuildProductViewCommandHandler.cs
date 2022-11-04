@@ -78,9 +78,10 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                 .GroupBy(i => i.Id)
                 .ToDictionary(g => g.Key, i => i.First());
 
-            var productCategoryLookup = productCategoryTask.Result
-                .GroupBy(i => i.ProductId)
-                .ToDictionary(g => g.Key, i => i.First().CategoryId);
+            var productCategoryLookup = productCategoryTask?.Result
+                  .Where(p => !p.DeletedUtc.HasValue)
+                  .GroupBy(i => i.ProductId)
+                  .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
 
             var barcodeLookup = barcodesTask.Result
                 .GroupBy(i => i.ProductId)
@@ -102,15 +103,27 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                     try
                     {
                         var product = products[i];
+                        var categoryIds = new List<Guid>();
+                        List<CategoryEntity>? categories = new List<CategoryEntity>();
 
-                        productCategoryLookup.TryGetValue(product.Id, out var categoryId);
-                        categoryLookup.TryGetValue(categoryId, out var category);
+                        productCategoryLookup?.TryGetValue(product.Id, out categoryIds);
+
+
+                        foreach (var categoryId in categoryIds)
+                        {
+                            CategoryEntity? category = null;
+                            categoryLookup?.TryGetValue(categoryId, out category);
+                            categories.Add(category);
+                        }
 
 
                         Guid? parentCategoryId = null;
-                        if (category != null)
+
+                        if (categories != null && categories.Count > 0)
                         {
-                            categoryLowerLookup.TryGetValue(category?.Id ?? Guid.Empty, out var higherLevelCategoryId);
+                            var higherLevelCategoryId = Guid.Empty;
+
+                            categoryLowerLookup?.TryGetValue(categories.FirstOrDefault()?.Id ?? Guid.Empty, out higherLevelCategoryId);
                             parentCategoryId = higherLevelCategoryId;
                         }
 
@@ -119,8 +132,9 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                         barcodeLookup.TryGetValue(product.Id, out var barcodes);
                         var barcodeNumber = barcodes?.BarcodeNumber;
 
-                        var categoryNames = category?.Id is not null
-                            ? category.Name
+
+                        var categoryNames = categories is not null && categories.Count > 0
+                            ? String.Join(',', categories.Select(s => s.Name))
                             : string.Empty;
 
                         var productView = new ProductViewRecord(
@@ -140,7 +154,7 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                             barcodeNumber,
                             categoryNames,
                             parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : null,
-                            category != null ? new List<CategoryViewRecord>() { new CategoryViewRecord(category.Id, category.Name, category.Type) } : null);
+                          categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : null);
 
                         var upsertEntity = await _containerRepository.UpsertAsync(productView);
                         success = upsertEntity is not null;

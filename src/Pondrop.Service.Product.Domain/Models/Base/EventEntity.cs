@@ -71,6 +71,10 @@ public abstract record EventEntity
     [JsonProperty("updatedUtc")]
     public DateTime UpdatedUtc { get; protected set; }
 
+    [JsonProperty("deletedUtc")]
+    public DateTime? DeletedUtc { get; protected set; }
+
+
     public IEnumerable<IEvent> GetEvents() => Events;
     public IEnumerable<IEvent> GetEvents(long fromSequenceNumber) => Events.Where(i => i.SequenceNumber >= fromSequenceNumber);
     

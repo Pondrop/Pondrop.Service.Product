@@ -52,6 +52,9 @@ public record ProductCategoryEntity : EventEntity
             case UpdateProductCategory update:
                 When(update, eventToApply.CreatedBy, eventToApply.CreatedUtc);
                 break;
+            case DeleteProductCategory delete:
+                When(delete, eventToApply.CreatedBy, eventToApply.CreatedUtc);
+                break;
             default:
                 throw new InvalidOperationException($"Unrecognised event type for '{StreamType}', got '{eventToApply.GetType().Name}'");
         }
@@ -98,5 +101,11 @@ public record ProductCategoryEntity : EventEntity
             UpdatedBy = createdBy;
             UpdatedUtc = createdUtc;
         }
+    }
+    private void When(DeleteProductCategory delete, string createdBy, DateTime deletedUtc)
+    {
+        DeletedUtc = deletedUtc;
+        UpdatedBy = createdBy;
+        UpdatedUtc = deletedUtc;
     }
 }
