@@ -108,14 +108,15 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
 
                         productCategoryLookup?.TryGetValue(product.Id, out categoryIds);
 
-
-                        foreach (var categoryId in categoryIds)
+                        if (categoryIds != null)
                         {
-                            CategoryEntity? category = null;
-                            categoryLookup?.TryGetValue(categoryId, out category);
-                            categories.Add(category);
+                            foreach (var categoryId in categoryIds)
+                            {
+                                CategoryEntity? category = null;
+                                categoryLookup?.TryGetValue(categoryId, out category);
+                                categories.Add(category);
+                            }
                         }
-
 
                         Guid? parentCategoryId = null;
 
