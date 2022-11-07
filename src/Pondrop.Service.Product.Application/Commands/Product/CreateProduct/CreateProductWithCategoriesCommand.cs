@@ -30,5 +30,6 @@ public class CreateProductWithCategoriesCommand : IRequest<Result<ProductRecord>
     public string PublicationLifecycleId { get; init; } = string.Empty;
 
     public List<Guid>? CategoryIds { get; init; } = null;
+    public string BarcodeNumber { get; init; } = String.Empty;
 }
 

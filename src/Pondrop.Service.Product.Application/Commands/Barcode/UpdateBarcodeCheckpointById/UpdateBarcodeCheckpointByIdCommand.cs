@@ -6,4 +6,5 @@ namespace Pondrop.Service.Product.Application.Commands;
 
 public class UpdateBarcodeCheckpointByIdCommand : UpdateCheckpointByIdCommand<Result<BarcodeRecord>>
 {
+    public Guid ProductId { get; set; }
 }

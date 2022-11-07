@@ -15,12 +15,14 @@ public class CreateProductCommandHandler : DirtyCommandHandler<ProductEntity, Cr
     private readonly IEventRepository _eventRepository;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
+    private readonly ICheckpointRepository<ProductEntity> _checkpointRepository;
     private readonly IValidator<CreateProductCommand> _validator;
     private readonly ILogger<CreateProductCommandHandler> _logger;
 
     public CreateProductCommandHandler(
         IOptions<ProductUpdateConfiguration> ProductUpdateConfig,
         IEventRepository eventRepository,
+        ICheckpointRepository<ProductEntity> checkpointRepository,
         IDaprService daprService,
         IUserService userService,
         IMapper mapper,
@@ -30,6 +32,7 @@ public class CreateProductCommandHandler : DirtyCommandHandler<ProductEntity, Cr
         _eventRepository = eventRepository;
         _mapper = mapper;
         _userService = userService;
+        _checkpointRepository = checkpointRepository;
         _validator = validator;
         _logger = logger;
     }
@@ -49,6 +52,12 @@ public class CreateProductCommandHandler : DirtyCommandHandler<ProductEntity, Cr
 
         try
         {
+
+            var duplicateMessage = $"Possible product match found";
+            var existingProduct = await GetExistingProductByName(command.Name);
+            if (existingProduct != null && existingProduct.Count > 0)
+                return Result<ProductRecord>.Error(duplicateMessage);
+
             var ProductEntity = new ProductEntity(
                 command.Name,
                 command.BrandId ?? Guid.Empty,
@@ -80,6 +89,26 @@ public class CreateProductCommandHandler : DirtyCommandHandler<ProductEntity, Cr
 
         return result;
     }
+
+    private async Task<List<ProductEntity>> GetExistingProductByName(string categoryName)
+    {
+        const string categoryNameKey = "@categoryName";
+
+        var conditions = new List<string>();
+        var parameters = new Dictionary<string, string>();
+
+        conditions.Add($"LOWER(c.name) = {categoryNameKey}");
+        parameters.Add(categoryNameKey, categoryName.ToLower());
+
+        if (!conditions.Any())
+            return new List<ProductEntity>(0);
+
+        var sqlQueryText = $"SELECT * FROM c WHERE {string.Join(" AND ", conditions)}";
+
+        var affectedProductCategories = await _checkpointRepository.QueryAsync(sqlQueryText, parameters);
+        return affectedProductCategories;
+    }
+
 
     private static string FailedToCreateMessage(CreateProductCommand command) =>
         $"Failed to create Product\nCommand: '{JsonConvert.SerializeObject(command)}'";
