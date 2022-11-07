@@ -6,4 +6,7 @@ namespace Pondrop.Service.Product.Application.Queries;
 
 public class GetAllCategoriesQuery : IRequest<Result<List<CategoryEntity>>>
 {
+    public int Limit { get; set; }
+
+    public int Offset { get; set; }
 }

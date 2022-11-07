@@ -42,7 +42,7 @@ public class GetAllBarcodesQueryHandler : IRequestHandler<GetAllBarcodesQuery, R
 
         try
         {
-            var records = await _barcodeRepository.GetAllAsync();
+            var records = await _barcodeRepository.QueryAsync($"SELECT * FROM c OFFSET {request.Offset} LIMIT {request.Limit}");
             result = Result<List<BarcodeEntity>>.Success(records);
         }
         catch (Exception ex)

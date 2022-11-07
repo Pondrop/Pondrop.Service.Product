@@ -43,7 +43,7 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, R
 
         try
         {
-            var records = await _ProductRepository.GetAllAsync();
+            var records = await _ProductRepository.QueryAsync($"SELECT * FROM c OFFSET {request.Offset} LIMIT {request.Limit}");
             result = Result<List<ProductEntity>>.Success(records);
         }
         catch (Exception ex)

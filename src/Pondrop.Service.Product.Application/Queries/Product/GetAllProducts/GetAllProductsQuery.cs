@@ -7,4 +7,7 @@ namespace Pondrop.Service.Product.Application.Queries;
 
 public class GetAllProductsQuery : IRequest<Result<List<ProductEntity>>>
 {
+    public int Limit { get; set; }
+
+    public int Offset { get; set; }
 }

@@ -56,11 +56,16 @@ public class ProductCategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAllProductCategories()
+    public async Task<IActionResult> GetAllProductCategories(int offset = 0, int limit = 10)
     {
-        var result = await _mediator.Send(new GetAllProductCategoriesQuery());
+        var result = await _mediator.Send(new GetAllProductCategoriesQuery()
+        {
+            Offset = offset,
+            Limit = limit
+        });
         return result.Match<IActionResult>(
-            i => new OkObjectResult(i),
+            i => new OkObjectResult(new { Items = i, Offset = offset, Limit = limit, count = i!.Count() }
+            ),
             (ex, msg) => new BadRequestObjectResult(msg));
     }
 
@@ -68,11 +73,16 @@ public class ProductCategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAllParentCategories()
+    public async Task<IActionResult> GetAllParentCategories(int offset = 0, int limit = 10)
     {
-        var result = await _mediator.Send(new GetAllParentCategoriesQuery());
+        var result = await _mediator.Send(new GetAllParentCategoriesQuery()
+        {
+            Offset = offset,
+            Limit = limit
+        });
         return result.Match<IActionResult>(
-            i => new OkObjectResult(i),
+            i => new OkObjectResult(new { Items = i, Offset = offset, Limit = limit, count = i!.Count() }
+            ),
             (ex, msg) => new BadRequestObjectResult(msg));
     }
 

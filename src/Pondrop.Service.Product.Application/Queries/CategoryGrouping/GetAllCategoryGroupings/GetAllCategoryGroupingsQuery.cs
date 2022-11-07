@@ -6,4 +6,7 @@ namespace Pondrop.Service.Product.Application.Queries;
 
 public class GetAllCategoryGroupingsQuery : IRequest<Result<List<CategoryGroupingViewRecord>>>
 {
+    public int Limit { get; set; }
+
+    public int Offset { get; set; }
 }
