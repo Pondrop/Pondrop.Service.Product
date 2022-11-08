@@ -42,7 +42,14 @@ public class GetAllCategoryGroupingsQueryHandler : IRequestHandler<GetAllCategor
 
         try
         {
-            var records = await _categoryGroupingContainerRepository.QueryAsync($"SELECT * FROM c OFFSET {request.Offset} LIMIT {request.Limit}");
+            var query = $"SELECT * FROM c";
+
+            if (request.Offset != -1 && request.Limit != -1)
+            {
+                query += $" OFFSET {request.Offset} LIMIT {request.Limit}";
+            }
+
+            var records = await _categoryGroupingContainerRepository.QueryAsync(query);
             result = Result<List<CategoryGroupingViewRecord>>.Success(records);
         }
         catch (Exception ex)

@@ -42,7 +42,15 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
 
         try
         {
-            var records = await _categoryRepository.QueryAsync($"SELECT * FROM c OFFSET {request.Offset} LIMIT {request.Limit}");
+            var query = $"SELECT * FROM c";
+
+            if (request.Offset != -1 && request.Limit != -1)
+            {
+                query += $" OFFSET {request.Offset} LIMIT {request.Limit}";
+            }
+
+
+            var records = await _categoryRepository.QueryAsync(query);
             result = Result<List<CategoryEntity>>.Success(records);
         }
         catch (Exception ex)

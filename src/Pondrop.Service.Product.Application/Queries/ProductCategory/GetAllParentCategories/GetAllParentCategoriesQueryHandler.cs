@@ -42,7 +42,15 @@ public class GetAllParentCategoriesQueryHandler : IRequestHandler<GetAllParentCa
 
         try
         {
-            var records = await _parentCategoryContainerRepository.QueryAsync($"SELECT * FROM c OFFSET {request.Offset} LIMIT {request.Limit}");
+            var query = $"SELECT * FROM c";
+
+            if (request.Offset != -1 && request.Limit != -1)
+            {
+                query += $" OFFSET {request.Offset} LIMIT {request.Limit}";
+            }
+
+
+            var records = await _parentCategoryContainerRepository.QueryAsync(query);
             result = Result<List<ParentCategoryViewRecord>>.Success(records);
         }
         catch (Exception ex)
