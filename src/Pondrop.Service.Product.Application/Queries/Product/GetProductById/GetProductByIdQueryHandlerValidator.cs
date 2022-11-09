@@ -2,9 +2,9 @@
 
 namespace Pondrop.Service.Product.Application.Queries;
 
-public class GetProductByIdQueryHandlerValidator : AbstractValidator<GetProductByIdQuery>
+public class GetFullProductByIdQueryHandlerValidator : AbstractValidator<GetFullProductByIdQuery>
 {
-    public GetProductByIdQueryHandlerValidator()
+    public GetFullProductByIdQueryHandlerValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
     }

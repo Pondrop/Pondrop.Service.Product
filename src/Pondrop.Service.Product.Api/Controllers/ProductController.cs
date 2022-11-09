@@ -84,6 +84,21 @@ public class ProductController : ControllerBase
             (ex, msg) => new BadRequestObjectResult(msg));
     }
 
+    [HttpGet]
+    [Route("{id:guid}/full")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetFullProductById([FromRoute] Guid id)
+    {
+        var result = await _mediator.Send(new GetFullProductByIdQuery() { Id = id });
+        return result.Match<IActionResult>(
+            i => i is not null ? new OkObjectResult(i) : new NotFoundResult(),
+            (ex, msg) => new BadRequestObjectResult(msg));
+    }
+
+
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(StatusCodes.Status201Created)]
