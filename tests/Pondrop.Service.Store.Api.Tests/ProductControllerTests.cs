@@ -5,13 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Models;
 using Moq;
 using Pondrop.Service.Product.Api.Controllers;
 using Pondrop.Service.Product.Api.Models;
 using Pondrop.Service.Product.Api.Services;
 using Pondrop.Service.Product.Application.Commands;
-using Pondrop.Service.Product.Application.Interfaces;
 using Pondrop.Service.Product.Application.Queries;
 using Pondrop.Service.Product.Tests.Faker;
 using System;
@@ -19,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using Pondrop.Service.Product.Domain.Models.Product;
+using Pondrop.Service.Interfaces;
 
 namespace Pondrop.Service.Product.Api.Tests
 {

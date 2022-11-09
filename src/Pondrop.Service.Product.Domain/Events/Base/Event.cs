@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Pondrop.Service.Events;
 
 namespace Pondrop.Service.Product.Domain.Events;
 

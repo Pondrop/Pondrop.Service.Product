@@ -1,18 +1,13 @@
 ﻿using AutoMapper;
-using Google.Type;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Pondrop.Service.Product.Application.Interfaces;
-using Pondrop.Service.Product.Application.Interfaces.Services;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Events.Category;
 using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Domain.Models.Product;
-using Pondrop.Service.Product.Domain.Models.ProductCategory;
 using Pondrop.Service.ProductCategory.Domain.Models;
 using System.Diagnostics;
-using DateTime = System.DateTime;
 
 namespace Pondrop.Service.Product.Application.Commands;
 

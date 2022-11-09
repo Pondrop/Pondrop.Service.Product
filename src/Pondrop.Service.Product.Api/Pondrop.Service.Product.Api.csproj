@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.Proxy" Version="4.4.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
     <PackageReference Include="Azure.Search.Documents" Version="11.4.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.1.2" />
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -25,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Pondrop.Service.Infrastructure\Pondrop.Service.Infrastructure\Pondrop.Service.Infrastructure.csproj" />
     <ProjectReference Include="..\Pondrop.Service.Product.Application\Pondrop.Service.Product.Application.csproj" />
     <ProjectReference Include="..\Pondrop.Service.Product.Domain\Pondrop.Service.Product.Domain.csproj" />
-    <ProjectReference Include="..\Pondrop.Service.Product.Infrastructure\Pondrop.Service.Product.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

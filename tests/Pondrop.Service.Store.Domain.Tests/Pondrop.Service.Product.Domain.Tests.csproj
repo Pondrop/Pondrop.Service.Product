@@ -25,4 +25,10 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Pondrop.Service.Product.Domain\Pondrop.Service.Product.Domain.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Pondrop.Service.Infrastructure">
+        <HintPath>..\..\..\Pondrop.Service.Infrastructure\Pondrop.Service.Infrastructure\obj\Debug\net6.0\Pondrop.Service.Infrastructure.dll</HintPath>
+      </Reference>
+    </ItemGroup>
 </Project>

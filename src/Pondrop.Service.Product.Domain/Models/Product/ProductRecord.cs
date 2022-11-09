@@ -1,4 +1,6 @@
-﻿namespace Pondrop.Service.Product.Domain.Models.Product;
+﻿using Pondrop.Service.Models;
+
+namespace Pondrop.Service.Product.Domain.Models.Product;
 
 public record ProductRecord(
     Guid Id,

@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Pondrop.Service.Product.Application.Interfaces;
+using Pondrop.Service.Interfaces;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Domain.Models.Product;
 
 namespace Pondrop.Service.Product.Application.Queries;

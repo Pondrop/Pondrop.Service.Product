@@ -1,6 +1,6 @@
 
-using Pondrop.Service.Product.Application.Interfaces.Services;
-using Pondrop.Service.Product.Domain.Models.User;
+using Pondrop.Service.Interfaces.Services;
+using Pondrop.Service.Models.User;
 
 namespace Pondrop.Service.Product.Api.Services;
 

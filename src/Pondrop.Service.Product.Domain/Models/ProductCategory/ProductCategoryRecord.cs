@@ -1,4 +1,5 @@
-﻿using Pondrop.Service.Product.Domain.Models;
+﻿using Pondrop.Service.Models;
+using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.ProductCategory.Domain.Models;
 

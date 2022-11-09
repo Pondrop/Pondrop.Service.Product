@@ -1,7 +1,5 @@
 using Pondrop.Service.Product.Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace Pondrop.Service.Barcode.Domain.Tests;

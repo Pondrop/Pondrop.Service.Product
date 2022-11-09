@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Pondrop.Service.Product.Application.Interfaces;
+using Pondrop.Service.Events;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Models;
 using Pondrop.Service.Product.Application.Models;
 using Pondrop.Service.Product.Domain.Events;
 using Pondrop.Service.Product.Domain.Models;

@@ -1,15 +1,11 @@
-using AutoMapper;
 using Azure.Messaging.ServiceBus;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Pondrop.Service.Product.Application.Commands;
-using Pondrop.Service.Product.Application.Interfaces;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Models;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Pondrop.Service.Product.Api.Services;
 

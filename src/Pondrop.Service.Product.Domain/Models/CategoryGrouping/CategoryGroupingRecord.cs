@@ -1,4 +1,6 @@
-﻿namespace Pondrop.Service.Product.Domain.Models;
+﻿using Pondrop.Service.Models;
+
+namespace Pondrop.Service.Product.Domain.Models;
 
 public record CategoryGroupingRecord(
     Guid Id,
