@@ -16,8 +16,9 @@ public record ProductRecord(
         string CreatedBy,
         string UpdatedBy,
         DateTime CreatedUtc,
-        DateTime UpdatedUtc)
-    : AuditRecord(CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc)
+        DateTime UpdatedUtc,
+        DateTime? DeletedUtc)
+    : AuditRecord(CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc, DeletedUtc)
 {
     public ProductRecord() : this(
         Guid.Empty,
@@ -35,7 +36,8 @@ public record ProductRecord(
         string.Empty,
         string.Empty,
         DateTime.MinValue,
-        DateTime.MinValue)
+        DateTime.MinValue,
+        null)
     {
     }
 }

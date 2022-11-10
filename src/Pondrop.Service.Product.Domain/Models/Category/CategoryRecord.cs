@@ -8,8 +8,9 @@ public record CategoryRecord(
         string CreatedBy,
         string UpdatedBy,
         DateTime CreatedUtc,
-        DateTime UpdatedUtc)
-    : AuditRecord(CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc)
+        DateTime UpdatedUtc,
+        DateTime? DeletedUtc)
+    : AuditRecord(CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc, DeletedUtc)
 {
     public CategoryRecord() : this(
         Guid.Empty,
@@ -19,7 +20,8 @@ public record CategoryRecord(
         string.Empty,
         string.Empty,
         DateTime.MinValue,
-        DateTime.MinValue)
+        DateTime.MinValue, 
+        null)
     {
     }
 }

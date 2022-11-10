@@ -59,7 +59,7 @@ public class SetProductCategoriesCommandHandler : DirtyCommandHandler<ProductCat
             var success = false;
             var results = new List<ProductCategoryRecord>();
 
-            var productCategoryEntities = await _ProductCategoryCheckpointRepository.QueryAsync($"SELECT * FROM c WHERE c.productId = '{command.ProductId}'");
+            var productCategoryEntities = await _ProductCategoryCheckpointRepository.QueryAsync($"SELECT * FROM c WHERE c.deletedUtc = null AND c.productId = '{command.ProductId}'");
 
             if (productCategoryEntities is not null)
             {
@@ -69,14 +69,12 @@ public class SetProductCategoriesCommandHandler : DirtyCommandHandler<ProductCat
                     var createdBy = _userService.CurrentUserId();
 
                     await UpdateStreamAsync(productCategoryEntity, evtPayload, createdBy);
-
-
                     await _ProductCategoryCheckpointRepository.FastForwardAsync(productCategoryEntity);
-
-                    await UpdateStreamAsync(productCategoryEntity, evtPayload, createdBy);
 
                     await Task.WhenAll(
                         InvokeDaprMethods(productCategoryEntity.Id, productCategoryEntity.GetEvents(productCategoryEntity.AtSequence)));
+
+                    results.Add(_mapper.Map<ProductCategoryRecord>(productCategoryEntity));
                 }
 
                 if (command.CategoryIds is not null)

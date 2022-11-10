@@ -147,7 +147,7 @@ public class ProductCategoryController : ControllerBase
                     {
                         Id = item!.Id,
                         ProductId = item.ProductId,
-                        CategoryId = item.CategoryId,
+                        CategoryId = item.CategoryId
                     });
                 }
                 return StatusCode(StatusCodes.Status201Created, i);

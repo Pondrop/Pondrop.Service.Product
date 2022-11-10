@@ -113,7 +113,7 @@ public class
                 .ToDictionary(g => g.Key, i => i.First());
 
             var productCategoryLookup = productCategoryTask?.Result
-                .Where(p => !p.DeletedUtc.HasValue)
+                .Where(p => p.DeletedUtc == null)
                 .GroupBy(i => i.ProductId)
                 .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
 

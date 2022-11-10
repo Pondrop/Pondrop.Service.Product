@@ -11,8 +11,9 @@ public record BarcodeRecord(
     string CreatedBy,
     string UpdatedBy,
     DateTime CreatedUtc,
-    DateTime UpdatedUtc)
-    : AuditRecord(CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc)
+    DateTime UpdatedUtc,
+        DateTime? DeletedUtc)
+    : AuditRecord(CreatedBy, UpdatedBy, CreatedUtc, UpdatedUtc, DeletedUtc)
 {
     public BarcodeRecord() : this(
         Guid.Empty,
@@ -25,7 +26,8 @@ public record BarcodeRecord(
         string.Empty,
         string.Empty,
         DateTime.MinValue,
-        DateTime.MinValue)
+        DateTime.MinValue,
+        null)
     {
     }
 }
