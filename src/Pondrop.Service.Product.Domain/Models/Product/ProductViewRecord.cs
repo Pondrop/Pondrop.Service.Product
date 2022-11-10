@@ -14,10 +14,11 @@ public record ProductViewRecord(
     string PossibleCategories,
     string PublicationLifecycleId,
     List<Guid> ChildProductId,
-        string? BarcodeNumber,
-        string CategoryNames,
-        CategoryViewRecord? ParentCategory,
-        List<CategoryViewRecord>? Categories)
+    string? BarcodeNumber,
+    string CategoryNames,
+    CategoryViewRecord? ParentCategory,
+    List<CategoryViewRecord>? Categories,
+    DateTime? UpdatedUtc)
 {
     public ProductViewRecord() : this(
           Guid.Empty,
@@ -35,6 +36,7 @@ public record ProductViewRecord(
         null,
         string.Empty,
         string.Empty,
+        null,
         null,
         null)
     {

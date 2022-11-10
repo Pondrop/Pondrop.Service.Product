@@ -155,7 +155,8 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                             barcodeNumber,
                             categoryNames,
                             parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : null,
-                          categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : null);
+                          categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : null,
+                          product.UpdatedUtc);
 
                         var upsertEntity = await _containerRepository.UpsertAsync(productView);
                         success = upsertEntity is not null;
