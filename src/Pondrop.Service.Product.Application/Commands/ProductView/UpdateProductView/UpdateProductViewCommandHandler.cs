@@ -90,7 +90,7 @@ public class
             if (!string.IsNullOrEmpty(productIdString))
                 conditions.Add($"c.productId IN ({productIdString})");
 
-            var conditionString = $"SELECT * FROM c WHERE {string.Join(" OR ", conditions)}";
+            var conditionString = $"SELECT * FROM c WHERE {string.Join(" OR ", conditions)} AND c.deletedUtc = null";
 
             var productCategoryTask = _productCategoryCheckpointRepository.QueryAsync(conditionString);
 

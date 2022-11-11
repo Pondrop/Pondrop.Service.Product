@@ -143,13 +143,22 @@ public class ProductCategoryController : ControllerBase
             {
                 foreach (var item in i)
                 {
-                    await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand()
+                    await _mediator.Send(new UpdateProductCategoryCheckpointByIdCommand()
                     {
                         Id = item!.Id,
                         ProductId = item.ProductId,
                         CategoryId = item.CategoryId
                     });
                 }
+
+                await _mediator.Send(new UpdateProductViewCommand() { ProductId = i!.LastOrDefault()!.ProductId });
+
+                //foreach (var item in i)
+                //{
+
+                //    await _mediator!.Send(new UpdateCategoryWithProductsViewCommand() { ProductCategoryId = item!.Id });
+                //}
+
                 return StatusCode(StatusCodes.Status201Created, i);
             },
             (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
