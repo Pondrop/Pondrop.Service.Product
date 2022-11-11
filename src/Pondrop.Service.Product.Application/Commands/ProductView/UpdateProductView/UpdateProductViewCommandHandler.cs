@@ -138,7 +138,7 @@ public class
 
                         productCategoryLookup?.TryGetValue(product.Id, out categoryIds);
 
-                        if (categoryLookup == null)
+                        if (categoryLookup == null && categoryIds?.Count > 0)
                         {
                             var catIdString = string.Join(", ", categoryIds.Select(i => $"'{i}'"));
 
@@ -216,7 +216,7 @@ public class
                         var barcodeNumber = barcode?.BarcodeNumber;
 
                         var categoryNames = categories is not null && categories.Count > 0
-                            ? String.Join(',', categories.Select(s => s.Name))
+                            ? String.Join(',', categories.Select(s => s?.Name))
                             : string.Empty;
 
                         var productView = new ProductViewRecord(

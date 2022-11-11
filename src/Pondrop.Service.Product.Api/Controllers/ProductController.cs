@@ -141,7 +141,7 @@ public class ProductController : ControllerBase
         return await result.MatchAsync<IActionResult>(
             async i =>
             {
-                await _serviceBusService.SendMessageAsync(new UpdateProductCheckpointByIdCommand() { Id = i!.Id });
+                await _mediator.Send(new UpdateProductCheckpointByIdCommand() { Id = i!.Id });
                 var productCategoryResult = await _mediator.Send(new SetProductCategoriesCommand() { ProductId = i!.Id, CategoryIds = command!.CategoryIds, PublicationLifecycleId = command.PublicationLifecycleId });
                 await productCategoryResult.MatchAsync<IActionResult>(
                     async productCategories =>
@@ -150,17 +150,24 @@ public class ProductController : ControllerBase
                         {
                             foreach (var productCategory in productCategories)
                             {
-                                await _serviceBusService.SendMessageAsync(new UpdateProductCategoryCheckpointByIdCommand() { Id = productCategory!.Id, ProductId = productCategory!.ProductId, CategoryId = productCategory!.CategoryId });
+                                await _mediator.Send(new UpdateProductCategoryCheckpointByIdCommand() { Id = productCategory!.Id, ProductId = productCategory!.ProductId, CategoryId = productCategory!.CategoryId });
                             }
                         }
-                        return StatusCode(StatusCodes.Status201Created, i);
-                    }, (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
 
-                var barcodeResult = await _mediator.Send(new CreateBarcodeCommand() { ProductId = i!.Id, RetailerId = i!.Id, CompanyId = i!.Id, BarcodeNumber = command.BarcodeNumber, BarcodeText = command.BarcodeNumber, BarcodeType = "GTIN", PublicationLifecycleId = i!.PublicationLifecycleId });
-                await barcodeResult.MatchAsync<IActionResult>(
-                    async barcode =>
-                    {
-                        await _serviceBusService.SendMessageAsync(new UpdateBarcodeCheckpointByIdCommand() { Id = barcode!.Id, ProductId = barcode!.ProductID });
+                        await _mediator.Send(new UpdateProductViewCommand() { ProductId = i.Id });
+
+                        if (!string.IsNullOrEmpty(command.BarcodeNumber))
+                        {
+                            var barcodeResult = await _mediator.Send(new CreateBarcodeCommand() { ProductId = i!.Id, RetailerId = i!.Id, CompanyId = i!.Id, BarcodeNumber = command.BarcodeNumber, BarcodeText = command.BarcodeNumber, BarcodeType = "GTIN", PublicationLifecycleId = i!.PublicationLifecycleId });
+                            await barcodeResult.MatchAsync<IActionResult>(
+                                async barcode =>
+                                {
+                                    await _serviceBusService.SendMessageAsync(new UpdateBarcodeCheckpointByIdCommand() { Id = barcode!.Id, ProductId = barcode!.ProductID });
+
+                                    return StatusCode(StatusCodes.Status201Created, i);
+                                }, (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
+                        }
+
 
                         return StatusCode(StatusCodes.Status201Created, i);
                     }, (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
