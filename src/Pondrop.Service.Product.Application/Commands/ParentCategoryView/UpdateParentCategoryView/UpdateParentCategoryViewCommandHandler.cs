@@ -7,6 +7,7 @@ using Pondrop.Service.Product.Application.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
 using Pondrop.Service.Product.Domain.Events.Category;
 using Pondrop.Service.Product.Domain.Models;
+using Pondrop.Service.Product.Domain.Models.Product;
 using Pondrop.Service.Product.Domain.Models.ProductCategory;
 using Pondrop.Service.ProductCategory.Domain.Models;
 
@@ -18,6 +19,7 @@ public class UpdateParentCategoryViewCommandHandler : IRequestHandler<UpdatePare
     private readonly ICheckpointRepository<CategoryEntity> _categoryCheckpointRepository;
     private readonly ICheckpointRepository<ProductCategoryEntity> _productCategoryCheckpointRepository;
     private readonly IContainerRepository<ParentCategoryViewRecord> _containerRepository;
+    private readonly IContainerRepository<ProductViewRecord> _productContainerRepository;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
     private readonly ILogger<UpdateParentCategoryViewCommandHandler> _logger;
@@ -27,6 +29,7 @@ public class UpdateParentCategoryViewCommandHandler : IRequestHandler<UpdatePare
         ICheckpointRepository<CategoryEntity> categoryCheckpointRepository,
         ICheckpointRepository<ProductCategoryEntity> productCategoryCheckpointRepository,
     IContainerRepository<ParentCategoryViewRecord> containerRepository,
+    IContainerRepository<ProductViewRecord> productContainerRepository,
         IMapper mapper,
         IUserService userService,
         ILogger<UpdateParentCategoryViewCommandHandler> logger) : base()
@@ -35,6 +38,7 @@ public class UpdateParentCategoryViewCommandHandler : IRequestHandler<UpdatePare
         _categoryCheckpointRepository = categoryCheckpointRepository;
         _productCategoryCheckpointRepository = productCategoryCheckpointRepository;
         _containerRepository = containerRepository;
+        _productContainerRepository = productContainerRepository;
         _mapper = mapper;
         _userService = userService;
         _logger = logger;
@@ -50,11 +54,8 @@ public class UpdateParentCategoryViewCommandHandler : IRequestHandler<UpdatePare
         try
         {
             var categoriesTask = _categoryCheckpointRepository.QueryAsync("SELECT * FROM c WHERE c.type = 'parent'");
-            var categoryGroupingsTask = _categoryGroupingCheckpointRepository.GetAllAsync();
 
-            await Task.WhenAll(categoryGroupingsTask, categoriesTask);
-
-            var categoryGroupings = categoryGroupingsTask.Result;
+            await Task.WhenAll(categoriesTask);
 
             var tasks = categoriesTask.Result.Select(async i =>
             {
@@ -62,17 +63,8 @@ public class UpdateParentCategoryViewCommandHandler : IRequestHandler<UpdatePare
 
                 try
                 {
-                    var lowerCategories = categoryGroupings?.Where(c => c.HigherLevelCategoryId == i.Id);
-
-                    var productCount = 0;
-                    if (lowerCategories != null)
-                    {
-                        foreach (var category in lowerCategories)
-                        {
-                            var productCategories = await _productCategoryCheckpointRepository.QueryAsync($"SELECT * FROM c WHERE c.categoryId = '{category.LowerLevelCategoryId}'");
-                            productCount += productCategories?.Count() ?? 0;
-                        }
-                    }
+                    var productCountResult = await _productContainerRepository.QueryAsync<int>($"SELECT VALUE COUNT(1) FROM c WHERE c.parentCategory.id = '{i.Id}'");
+                    var productCount = productCountResult?.FirstOrDefault() ?? 0;
 
                     var parentProductCategoryView = new ParentCategoryViewRecord(i.Id, i.Name, productCount);
 
