@@ -8,20 +8,23 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Pondrop.Service.Events;
+using Pondrop.Service.Infrastructure.CosmosDb;
+using Pondrop.Service.Infrastructure.Dapr;
+using Pondrop.Service.Infrastructure.ServiceBus;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Interfaces.Services;
+using Pondrop.Service.Models;
 using Pondrop.Service.Product.Api.Configurations.Extensions;
 using Pondrop.Service.Product.Api.Middleware;
 using Pondrop.Service.Product.Api.Models;
 using Pondrop.Service.Product.Api.Services;
-using Pondrop.Service.Product.Application.Interfaces;
-using Pondrop.Service.Product.Application.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
+using Pondrop.Service.Product.Domain.Events.Product;
 using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Domain.Models.Category;
 using Pondrop.Service.Product.Domain.Models.Product;
 using Pondrop.Service.Product.Domain.Models.ProductCategory;
-using Pondrop.Service.Product.Infrastructure.CosmosDb;
-using Pondrop.Service.Product.Infrastructure.Dapr;
-using Pondrop.Service.Product.Infrastructure.ServiceBus;
 using Pondrop.Service.ProductCategory.Domain.Models;
 using System.Text;
 using System.Text.Json;
@@ -134,7 +137,8 @@ services.AddSwaggerGen(c =>
 services.AddAutoMapper(
     typeof(Result<>),
     typeof(EventEntity),
-    typeof(EventRepository));
+    typeof(EventRepository),
+    typeof(CreateProduct));
 services.AddMediatR(
     typeof(Result<>));
 services.AddFluentValidation(config =>
@@ -170,6 +174,8 @@ services.AddSingleton<ICheckpointRepository<CategoryGroupingEntity>, CheckpointR
 services.AddSingleton<ICheckpointRepository<BarcodeEntity>, CheckpointRepository<BarcodeEntity>>();
 services.AddSingleton<IDaprService, DaprService>();
 services.AddSingleton<IServiceBusService, ServiceBusService>();
+
+DefaultEventTypePayloadResolver.Init(typeof(CreateProduct).Assembly);
 
 var app = builder.Build();
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();

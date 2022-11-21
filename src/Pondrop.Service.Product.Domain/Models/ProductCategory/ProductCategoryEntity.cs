@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Pondrop.Service.Events;
+using Pondrop.Service.Models;
 using Pondrop.Service.Product.Domain.Events;
 using Pondrop.Service.Product.Domain.Events.Product;
 using Pondrop.Service.Product.Domain.Events.ProductCategory;
@@ -41,6 +43,10 @@ public record ProductCategoryEntity : EventEntity
 
     [JsonProperty(PropertyName = "publicationLifecycleID")]
     public string PublicationLifecycleId { get; private set; }
+
+
+    [JsonProperty(PropertyName = "deletedUtc")]
+    public DateTime? DeletedUtc { get; private set; }
 
     protected sealed override void Apply(IEvent eventToApply)
     {
@@ -104,8 +110,8 @@ public record ProductCategoryEntity : EventEntity
     }
     private void When(DeleteProductCategory delete, string createdBy, DateTime deletedUtc)
     {
-        DeletedUtc = deletedUtc;
         UpdatedBy = createdBy;
         UpdatedUtc = deletedUtc;
+        DeletedUtc = deletedUtc;
     }
 }

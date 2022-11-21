@@ -2,9 +2,9 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Pondrop.Service.Product.Application.Interfaces;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Models;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Commands;
 

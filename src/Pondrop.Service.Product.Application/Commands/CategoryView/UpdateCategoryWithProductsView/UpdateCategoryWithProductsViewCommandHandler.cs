@@ -2,10 +2,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Pondrop.Service.Product.Application.Interfaces;
-using Pondrop.Service.Product.Application.Interfaces.Services;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Events.Category;
 using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Domain.Models.Category;
 using Pondrop.Service.Product.Domain.Models.Product;

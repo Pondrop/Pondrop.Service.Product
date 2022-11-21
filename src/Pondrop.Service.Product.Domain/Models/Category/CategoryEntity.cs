@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Pondrop.Service.Events;
+using Pondrop.Service.Models;
 using Pondrop.Service.Product.Domain.Events;
 using Pondrop.Service.Product.Domain.Events.Category;
 

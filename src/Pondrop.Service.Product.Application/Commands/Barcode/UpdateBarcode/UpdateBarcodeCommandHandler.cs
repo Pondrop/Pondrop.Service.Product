@@ -3,10 +3,9 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Pondrop.Service.Product.Application.Interfaces;
-using Pondrop.Service.Product.Application.Interfaces.Services;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
-using Pondrop.Service.Product.Domain.Events;
 using Pondrop.Service.Product.Domain.Events.Barcode;
 using Pondrop.Service.Product.Domain.Models;
 

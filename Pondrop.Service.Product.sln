@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{562E9EBD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Application.Tests", "tests\Pondrop.Service.Store.Application.Tests\Pondrop.Service.Product.Application.Tests.csproj", "{0B60A47D-BD9B-4D1B-939A-E6C73325BC09}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Infrastructure.Tests", "tests\Pondrop.Service.Store.Infrastructure.Tests\Pondrop.Service.Product.Infrastructure.Tests.csproj", "{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Domain.Tests", "tests\Pondrop.Service.Store.Domain.Tests\Pondrop.Service.Product.Domain.Tests.csproj", "{2527BE8F-3221-43E8-B954-87AF06EC3EB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Api", "src\Pondrop.Service.Product.Api\Pondrop.Service.Product.Api.csproj", "{9FB1E7C9-69CF-4B04-9517-69040D74C8BA}"
@@ -23,8 +21,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Application", "src\Pondrop.Service.Product.Application\Pondrop.Service.Product.Application.csproj", "{D305FFB8-2E86-4060-AD23-91E8D210BCC0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Domain", "src\Pondrop.Service.Product.Domain\Pondrop.Service.Product.Domain.csproj", "{FEBE1E62-4656-40A0-BE4F-977F082F9D6D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pondrop.Service.Product.Infrastructure", "src\Pondrop.Service.Product.Infrastructure\Pondrop.Service.Product.Infrastructure.csproj", "{E84806C4-43D1-4696-A8B0-0180BF14F44D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +36,6 @@ Global
 		{0B60A47D-BD9B-4D1B-939A-E6C73325BC09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B60A47D-BD9B-4D1B-939A-E6C73325BC09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B60A47D-BD9B-4D1B-939A-E6C73325BC09}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2527BE8F-3221-43E8-B954-87AF06EC3EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2527BE8F-3221-43E8-B954-87AF06EC3EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2527BE8F-3221-43E8-B954-87AF06EC3EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,10 +52,6 @@ Global
 		{FEBE1E62-4656-40A0-BE4F-977F082F9D6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEBE1E62-4656-40A0-BE4F-977F082F9D6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEBE1E62-4656-40A0-BE4F-977F082F9D6D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E84806C4-43D1-4696-A8B0-0180BF14F44D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E84806C4-43D1-4696-A8B0-0180BF14F44D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E84806C4-43D1-4696-A8B0-0180BF14F44D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E84806C4-43D1-4696-A8B0-0180BF14F44D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,7 +59,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AC2FE504-A159-4285-B439-C182E999DF2A} = {562E9EBD-E544-4620-A7DA-478856114F15}
 		{0B60A47D-BD9B-4D1B-939A-E6C73325BC09} = {562E9EBD-E544-4620-A7DA-478856114F15}
-		{EE3EA980-5C7B-4035-BB42-ED1C4BAEFDA8} = {562E9EBD-E544-4620-A7DA-478856114F15}
 		{2527BE8F-3221-43E8-B954-87AF06EC3EB0} = {562E9EBD-E544-4620-A7DA-478856114F15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

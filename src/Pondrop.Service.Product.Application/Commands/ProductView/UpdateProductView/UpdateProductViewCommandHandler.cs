@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Pondrop.Service.Product.Application.Interfaces;
-using Pondrop.Service.Product.Application.Interfaces.Services;
+using Pondrop.Service.Interfaces;
+using Pondrop.Service.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
 using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.Product.Domain.Models.Product;
-using Pondrop.Service.Product.Domain.Models.ProductCategory;
 using Pondrop.Service.ProductCategory.Domain.Models;
 
 namespace Pondrop.Service.Product.Application.Commands;
