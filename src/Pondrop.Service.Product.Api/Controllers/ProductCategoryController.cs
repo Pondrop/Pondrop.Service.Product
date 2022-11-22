@@ -184,8 +184,11 @@ public class ProductCategoryController : ControllerBase
                         CategoryId = item.CategoryId
                     });
                 }
+                foreach (var item in i)
+                {
+                    await _mediator.Send(new UpdateProductViewCommand() { CategoryId = item!.CategoryId, ProductId = item!.ProductId });
 
-                await _mediator.Send(new UpdateProductViewCommand() { CategoryId = i!.LastOrDefault()!.CategoryId });
+                }
 
 
                 return StatusCode(StatusCodes.Status201Created, i);
