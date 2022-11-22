@@ -101,7 +101,7 @@ public class
 
             await Task.WhenAll(new Task[] { categoryGroupingsTask, categoryTask, productCategoryTask, barcodesTask, productsTask }.Where(i => i != null));
 
-            var products = productsTask.Result;
+            var products = productsTask?.Result;
 
             var categoryLowerLookup = categoryGroupingsTask?.Result
                 .GroupBy(i => i.LowerLevelCategoryId)
@@ -119,6 +119,27 @@ public class
             var barcodeLookup = barcodesTask?.Result
                 .GroupBy(i => i.ProductId)
                 .ToDictionary(g => g.Key, g => g.First());
+
+
+            if (products == null && productCategoryLookup != null)
+            {
+
+                foreach (var productCategory in productCategoryLookup)
+                {
+                    productIds.Add(productCategory.Key);
+                }
+
+                productIdString = string.Join(", ", productIds.Select(i => $"'{i}'"));
+
+                productsTask = string.IsNullOrEmpty(productIdString) ? null :
+                _productCheckpointRepository.QueryAsync($"SELECT * FROM c WHERE c.id IN ({productIdString})");
+
+                if (productsTask != null)
+                {
+                    await Task.WhenAll(productsTask);
+                    products = productsTask?.Result;
+                }
+            }
 
             var upsertTasks = new List<Task<bool>>();
 
