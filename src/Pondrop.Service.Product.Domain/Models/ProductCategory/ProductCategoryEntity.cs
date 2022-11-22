@@ -44,10 +44,6 @@ public record ProductCategoryEntity : EventEntity
     [JsonProperty(PropertyName = "publicationLifecycleID")]
     public string PublicationLifecycleId { get; private set; }
 
-
-    [JsonProperty(PropertyName = "deletedUtc")]
-    public DateTime? DeletedUtc { get; private set; }
-
     protected sealed override void Apply(IEvent eventToApply)
     {
         switch (eventToApply.GetEventPayload())
