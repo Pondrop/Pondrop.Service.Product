@@ -255,8 +255,8 @@ public class
                             product.ChildProductId,
                             barcodeNumber,
                             categoryNames,
-                            parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : null,
-                            categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : null,
+                            parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : new CategoryViewRecord(),
+                            categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : new List<CategoryViewRecord>(),
                           product.UpdatedUtc);
 
                         var upsertEntity = await _containerRepository.UpsertAsync(productView);
