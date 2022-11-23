@@ -168,6 +168,7 @@ public class ProductController : ControllerBase
                                 }, (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
                         }
 
+                        await _mediator!.Send(new UpdateParentCategoryViewCommand());
 
                         return StatusCode(StatusCodes.Status201Created, i);
                     }, (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
@@ -228,6 +229,7 @@ public class ProductController : ControllerBase
 
         return this.HttpProxyAsync(url, _searchProxyOptions);
     }
+
 
     [HttpGet]
     [Route("indexer/run")]

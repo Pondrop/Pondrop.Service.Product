@@ -276,6 +276,17 @@ public class ProductCategoryController : ControllerBase
     }
 
     [HttpGet]
+    [Route("productcategory/run")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RunProductCategorizer()
+    {
+        var result = await _mediator.Send(new UpdateParentCategoryViewCommand());
+        return new AcceptedResult();
+    }
+
+
+    [HttpGet]
     [Route("indexer/run")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
