@@ -156,6 +156,8 @@ public class ProductCategoryController : ControllerBase
                     await _mediator.Send(new UpdateProductViewCommand() { ProductId = i!.LastOrDefault()!.ProductId });
                 }
 
+                await _mediator!.Send(new UpdateParentCategoryViewCommand());
+
                 return StatusCode(StatusCodes.Status201Created, i);
             },
             (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
@@ -187,6 +189,7 @@ public class ProductCategoryController : ControllerBase
 
                 }
 
+                await _mediator!.Send(new UpdateParentCategoryViewCommand());
 
                 return StatusCode(StatusCodes.Status201Created, i);
             },
