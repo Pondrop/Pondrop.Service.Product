@@ -151,13 +151,10 @@ public class ProductCategoryController : ControllerBase
                     });
                 }
 
-                await _mediator.Send(new UpdateProductViewCommand() { ProductId = i!.LastOrDefault()!.ProductId });
-
-                //foreach (var item in i)
-                //{
-
-                //    await _mediator!.Send(new UpdateCategoryWithProductsViewCommand() { ProductCategoryId = item!.Id });
-                //}
+                foreach (var item in i)
+                {
+                    await _mediator.Send(new UpdateProductViewCommand() { ProductId = i!.LastOrDefault()!.ProductId });
+                }
 
                 return StatusCode(StatusCodes.Status201Created, i);
             },
