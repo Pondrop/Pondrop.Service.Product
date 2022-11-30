@@ -93,7 +93,7 @@ public class CategoryGroupingController : ControllerBase
         return await result.MatchAsync<IActionResult>(
             async i =>
             {
-                await _serviceBusService.SendMessageAsync(new UpdateCategoryGroupingCheckpointByIdCommand() { Id = i!.Id , LowerCategoryId = i!.LowerLevelCategoryId});
+                await _serviceBusService.SendMessageAsync(new UpdateCategoryGroupingCheckpointByIdCommand() { Id = i!.Id, LowerCategoryId = i!.LowerLevelCategoryId });
                 return StatusCode(StatusCodes.Status201Created, i);
             },
             (ex, msg) => Task.FromResult<IActionResult>(new BadRequestObjectResult(msg)));
@@ -122,10 +122,8 @@ public class CategoryGroupingController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateCheckpoint([FromBody] UpdateCategoryGroupingCheckpointByIdCommand command)
     {
-        var result = await _mediator.Send(command);
-        return result.Match<IActionResult>(
-            i => new OkObjectResult(i),
-            (ex, msg) => new BadRequestObjectResult(msg));
+        await _serviceBusService.SendMessageAsync(command);
+        return new OkObjectResult(command);
     }
 
     [HttpPost]
