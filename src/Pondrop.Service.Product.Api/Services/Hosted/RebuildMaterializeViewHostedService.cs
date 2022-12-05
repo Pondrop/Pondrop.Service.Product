@@ -29,7 +29,7 @@ public class RebuildMaterializeViewHostedService : BackgroundService
             try
             {
                 var mediator = _serviceProvider.GetService<IMediator>();
-                await mediator!.Send(command, stoppingToken);
+                //await mediator!.Send(command, stoppingToken);
 
                 switch (command)
                 {

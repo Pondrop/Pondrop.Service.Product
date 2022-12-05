@@ -55,7 +55,8 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
             var sw = new Stopwatch();
             sw.Start();
 
-            var productsTask = _productCheckpointRepository.GetAllAsync();
+            //var productsTask = _productCheckpointRepository.GetAllAsync();
+            var productsTask = _productCheckpointRepository.QueryAsync("SELECT * FROM c WHERE c.productId = '1acc42bf-f6a6-4ba5-87ab-e4f7a0731eda'");
             var categoryGroupingsTask = _categoryGroupingContainerRepository.GetAllAsync();
             var categoryTask = _categoryCheckpointRepository.GetAllAsync();
             var productCategoryTask = _productCategoryCheckpointRepository.GetAllAsync();
@@ -74,8 +75,9 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                 .ToDictionary(g => g.Key, i => i.First());
 
             var productCategoryLookup = productCategoryTask?.Result
-                  .GroupBy(i => i.ProductId)
-                  .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
+                .Where(p => p.DeletedUtc == null)
+                 .GroupBy(i => i.ProductId)
+                 .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
 
             var barcodeLookup = barcodesTask.Result
                 .GroupBy(i => i.ProductId)
@@ -112,7 +114,7 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                             }
                         }
 
-                        Guid? parentCategoryId = null;
+                        Guid? parentCategoryId = Guid.Empty;
 
                         if (categories != null && categories.Count > 0)
                         {
@@ -129,12 +131,12 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
 
 
                         var categoryNames = categories is not null && categories.Count > 0
-                            ? String.Join(',', categories.Select(s => s.Name))
+                            ? String.Join(',', categories.Select(s => s?.Name))
                             : string.Empty;
 
                         var productView = new ProductViewRecord(
                             product.Id,
-                            parentCategoryId,
+                            parentCategory?.Id ?? Guid.Empty,
                             product.Name,
                             product.BrandId,
                             product.ExternalReferenceId,

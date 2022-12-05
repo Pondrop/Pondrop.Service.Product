@@ -216,6 +216,19 @@ public class ProductController : ControllerBase
         return new AcceptedResult();
     }
 
+
+    [HttpPost]
+    [Route("update/view")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateView([FromBody] UpdateProductViewCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.Match<IActionResult>(
+            i => new OkObjectResult(i),
+            (ex, msg) => new BadRequestObjectResult(msg));
+    }
+
     [HttpGet, HttpPost]
     [Route("search")]
     public Task ProxySearchCatchAll()

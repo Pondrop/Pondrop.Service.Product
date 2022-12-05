@@ -14,12 +14,14 @@ public class CreateProductCategoryCommandHandler : DirtyCommandHandler<ProductCa
 {
     private readonly IEventRepository _eventRepository;
     private readonly IMapper _mapper;
+    private readonly ICheckpointRepository<ProductCategoryEntity> _checkpointRepository;
     private readonly IUserService _userService;
     private readonly IValidator<CreateProductCategoryCommand> _validator;
     private readonly ILogger<CreateProductCategoryCommandHandler> _logger;
 
     public CreateProductCategoryCommandHandler(
         IOptions<ProductCategoryUpdateConfiguration> ProductCategoryUpdateConfig,
+        ICheckpointRepository<ProductCategoryEntity> checkpointRepository,
         IEventRepository eventRepository,
         IDaprService daprService,
         IUserService userService,
@@ -29,6 +31,7 @@ public class CreateProductCategoryCommandHandler : DirtyCommandHandler<ProductCa
     {
         _eventRepository = eventRepository;
         _mapper = mapper;
+        _checkpointRepository = checkpointRepository;
         _userService = userService;
         _validator = validator;
         _logger = logger;
@@ -49,20 +52,25 @@ public class CreateProductCategoryCommandHandler : DirtyCommandHandler<ProductCa
 
         try
         {
-            var ProductCategoryEntity = new ProductCategoryEntity(
-                command.CategoryId ?? Guid.Empty,
-                command.ProductId ?? Guid.Empty,
-                command.PublicationLifecycleId,
-                _userService.CurrentUserId());
+            var existingLink = await _checkpointRepository.QueryAsync($"SELECT * FROM c WHERE c.productId = '{command.ProductId}' AND c.categoryId = '{command.CategoryId}' AND c.deletedUtc = null");
 
-            var success = await _eventRepository.AppendEventsAsync(ProductCategoryEntity.StreamId, 0, ProductCategoryEntity.GetEvents());
+            if (existingLink == null || existingLink?.Count == 0)
+            {
+                var ProductCategoryEntity = new ProductCategoryEntity(
+                    command.CategoryId ?? Guid.Empty,
+                    command.ProductId ?? Guid.Empty,
+                    command.PublicationLifecycleId,
+                    _userService.CurrentUserId());
 
-            await Task.WhenAll(
-                InvokeDaprMethods(ProductCategoryEntity.Id, ProductCategoryEntity.GetEvents()));
+                var success = await _eventRepository.AppendEventsAsync(ProductCategoryEntity.StreamId, 0, ProductCategoryEntity.GetEvents());
 
-            result = success
-                ? Result<ProductCategoryRecord>.Success(_mapper.Map<ProductCategoryRecord>(ProductCategoryEntity))
-                : Result<ProductCategoryRecord>.Error(FailedToCreateMessage(command));
+                await Task.WhenAll(
+                    InvokeDaprMethods(ProductCategoryEntity.Id, ProductCategoryEntity.GetEvents()));
+
+                result = success
+                    ? Result<ProductCategoryRecord>.Success(_mapper.Map<ProductCategoryRecord>(ProductCategoryEntity))
+                    : Result<ProductCategoryRecord>.Error(FailedToCreateMessage(command));
+            }
         }
         catch (Exception ex)
         {

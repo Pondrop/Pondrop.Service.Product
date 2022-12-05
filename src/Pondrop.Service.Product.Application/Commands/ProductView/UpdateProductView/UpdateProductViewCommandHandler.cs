@@ -113,8 +113,8 @@ public class
 
             var productCategoryLookup = productCategoryTask?.Result
                 .Where(p => p.DeletedUtc == null)
-                .GroupBy(i => i.ProductId)
-                .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
+                 .GroupBy(i => i.ProductId)
+                 .ToDictionary(g => g.Key, i => new List<Guid>(i.Select(s => s.CategoryId)));
 
             var barcodeLookup = barcodesTask?.Result
                 .GroupBy(i => i.ProductId)
@@ -185,7 +185,7 @@ public class
                             }
                         }
 
-                        Guid? parentCategoryId = null;
+                        Guid? parentCategoryId = Guid.Empty;
                         if (categories != null && categories.Count > 0)
                         {
                             var higherLevelCategoryId = Guid.Empty;
@@ -241,7 +241,7 @@ public class
 
                         var productView = new ProductViewRecord(
                             product.Id,
-                            parentCategoryId,
+                            parentCategory?.Id ?? Guid.Empty,
                             product.Name,
                             product.BrandId,
                             product.ExternalReferenceId,
