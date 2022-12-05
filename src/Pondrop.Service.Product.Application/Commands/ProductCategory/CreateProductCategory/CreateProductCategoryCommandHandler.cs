@@ -53,24 +53,25 @@ public class CreateProductCategoryCommandHandler : DirtyCommandHandler<ProductCa
         try
         {
             var existingLink = await _checkpointRepository.QueryAsync($"SELECT * FROM c WHERE c.productId = '{command.ProductId}' AND c.categoryId = '{command.CategoryId}' AND c.deletedUtc = null");
+            var duplicateMessage = $"Possible product category match found";
 
-            if (existingLink == null || existingLink?.Count == 0)
-            {
-                var ProductCategoryEntity = new ProductCategoryEntity(
-                    command.CategoryId ?? Guid.Empty,
-                    command.ProductId ?? Guid.Empty,
-                    command.PublicationLifecycleId,
-                    _userService.CurrentUserId());
+            if (existingLink != null && existingLink.Count > 0)
+                return Result<ProductCategoryRecord>.Error(duplicateMessage);
 
-                var success = await _eventRepository.AppendEventsAsync(ProductCategoryEntity.StreamId, 0, ProductCategoryEntity.GetEvents());
+            var ProductCategoryEntity = new ProductCategoryEntity(
+                command.CategoryId ?? Guid.Empty,
+                command.ProductId ?? Guid.Empty,
+                command.PublicationLifecycleId,
+                _userService.CurrentUserId());
 
-                await Task.WhenAll(
-                    InvokeDaprMethods(ProductCategoryEntity.Id, ProductCategoryEntity.GetEvents()));
+            var success = await _eventRepository.AppendEventsAsync(ProductCategoryEntity.StreamId, 0, ProductCategoryEntity.GetEvents());
 
-                result = success
-                    ? Result<ProductCategoryRecord>.Success(_mapper.Map<ProductCategoryRecord>(ProductCategoryEntity))
-                    : Result<ProductCategoryRecord>.Error(FailedToCreateMessage(command));
-            }
+            await Task.WhenAll(
+                InvokeDaprMethods(ProductCategoryEntity.Id, ProductCategoryEntity.GetEvents()));
+
+            result = success
+                ? Result<ProductCategoryRecord>.Success(_mapper.Map<ProductCategoryRecord>(ProductCategoryEntity))
+                : Result<ProductCategoryRecord>.Error(FailedToCreateMessage(command));
         }
         catch (Exception ex)
         {
