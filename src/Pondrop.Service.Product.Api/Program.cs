@@ -172,6 +172,7 @@ services.AddSingleton<ICheckpointRepository<ProductCategoryEntity>, CheckpointRe
 services.AddSingleton<ICheckpointRepository<CategoryEntity>, CheckpointRepository<CategoryEntity>>();
 services.AddSingleton<ICheckpointRepository<CategoryGroupingEntity>, CheckpointRepository<CategoryGroupingEntity>>();
 services.AddSingleton<ICheckpointRepository<BarcodeEntity>, CheckpointRepository<BarcodeEntity>>();
+services.AddSingleton<ICheckpointRepository<BrandEntity>, CheckpointRepository<BrandEntity>>();
 services.AddSingleton<IDaprService, DaprService>();
 services.AddSingleton<IServiceBusService, ServiceBusService>();
 
