@@ -87,14 +87,13 @@ public class ProductController : ControllerBase
     [HttpGet]
     [Route("name/{name}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProductByName([FromRoute] string name)
     {
         var result = await _mediator.Send(new GetProductByNameQuery() { Name = name });
         return result.Match<IActionResult>(
-            i => i is not null ? new OkObjectResult(i) : new NotFoundResult(),
+            i => i is not null ? new OkObjectResult(i) : new OkResult(),
             (ex, msg) => new BadRequestObjectResult(msg));
     }
 
