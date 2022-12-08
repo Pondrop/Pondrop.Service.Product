@@ -55,8 +55,8 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
             var sw = new Stopwatch();
             sw.Start();
 
-            //var productsTask = _productCheckpointRepository.GetAllAsync();
-            var productsTask = _productCheckpointRepository.QueryAsync("SELECT * FROM c WHERE c.productId = '1acc42bf-f6a6-4ba5-87ab-e4f7a0731eda'");
+            var productsTask = _productCheckpointRepository.GetAllAsync();
+            //var productsTask = _productCheckpointRepository.QueryAsync("SELECT * FROM c WHERE c.productId = '1acc42bf-f6a6-4ba5-87ab-e4f7a0731eda'");
             var categoryGroupingsTask = _categoryGroupingContainerRepository.GetAllAsync();
             var categoryTask = _categoryCheckpointRepository.GetAllAsync();
             var productCategoryTask = _productCategoryCheckpointRepository.GetAllAsync();
@@ -129,6 +129,10 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                         barcodeLookup.TryGetValue(product.Id, out var barcodes);
                         var barcodeNumber = barcodes?.BarcodeNumber;
 
+                        if (categories != null && categories.Count > 0)
+                        {
+                            categories.RemoveAll(item => item == null);
+                        }
 
                         var categoryNames = categories is not null && categories.Count > 0
                             ? String.Join(',', categories.Select(s => s?.Name))
@@ -150,8 +154,8 @@ public class RebuildProductViewCommandHandler : IRequestHandler<RebuildProductVi
                             product.ChildProductId,
                             barcodeNumber,
                             categoryNames,
-                            parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : null,
-                          categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : null,
+                            parentCategory != null ? new CategoryViewRecord(parentCategory.Id, parentCategory.Name, parentCategory.Type) : new CategoryViewRecord(),
+                          categories != null && categories.Count > 0 ? _mapper.Map<List<CategoryViewRecord>>(categories) : new List<CategoryViewRecord>(),
                           product.UpdatedUtc);
 
                         var upsertEntity = await _containerRepository.UpsertAsync(productView);

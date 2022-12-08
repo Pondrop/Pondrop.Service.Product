@@ -158,7 +158,7 @@ public class
 
                         productCategoryLookup?.TryGetValue(product.Id, out categoryIds);
 
-                        if (categoryLookup == null && categoryIds?.Count > 0)
+                        if ((categoryLookup == null || categoryLookup?.Count < categoryIds?.Count) && categoryIds?.Count > 0)
                         {
                             var catIdString = string.Join(", ", categoryIds.Select(i => $"'{i}'"));
 
@@ -207,9 +207,15 @@ public class
                                 }
                             }
 
-                            categoryLowerLookup?.TryGetValue(categories.FirstOrDefault()?.Id ?? Guid.Empty, out higherLevelCategoryId);
+                            foreach (var cat in categories)
+                            {
+                                categoryLowerLookup?.TryGetValue(cat?.Id ?? Guid.Empty, out higherLevelCategoryId);
+                                if (higherLevelCategoryId != Guid.Empty)
+                                    break;
+                            }
                             parentCategoryId = higherLevelCategoryId;
                         }
+
 
                         CategoryEntity? parentCategory = null;
                         categoryLookup?.TryGetValue(parentCategoryId ?? Guid.Empty, out parentCategory);
@@ -234,6 +240,11 @@ public class
                         BarcodeEntity? barcode = null;
                         barcodeLookup?.TryGetValue(product.Id, out barcode);
                         var barcodeNumber = barcode?.BarcodeNumber;
+
+                        if (categories != null && categories.Count > 0)
+                        {
+                            categories.RemoveAll(item => item == null);
+                        }
 
                         var categoryNames = categories is not null && categories.Count > 0
                             ? String.Join(',', categories.Select(s => s?.Name))
