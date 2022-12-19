@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Pondrop.Service.Product.Application.Models;
+using Pondrop.Service.Product.Application.Models.Enums;
 using Pondrop.Service.Product.Domain.Models;
 using Pondrop.Service.ProductCategory.Domain.Models;
 
@@ -9,5 +10,6 @@ public class SetProductsCommand : IRequest<Result<List<ProductCategoryRecord>>>
 {
     public Guid CategoryId { get; init; } = Guid.Empty;
     public List<Guid>? ProductIds { get; init; } = null;
+    public SetType Type { get; init; } = SetType.Replace;
     public string PublicationLifecycleId { get; init; } = String.Empty;
 }

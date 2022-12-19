@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Pondrop.Service.Interfaces;
 using Pondrop.Service.Interfaces.Services;
 using Pondrop.Service.Product.Application.Models;
+using Pondrop.Service.Product.Application.Models.Enums;
 using Pondrop.Service.Product.Domain.Events.ProductCategory;
 using Pondrop.Service.ProductCategory.Domain.Models;
 
@@ -60,21 +61,24 @@ public class SetProductsCommandHandler : DirtyCommandHandler<ProductCategoryEnti
 
             if (productCategoryEntities is not null)
             {
-                foreach (var productCategoryEntity in productCategoryEntities)
+                if (command.Type != SetType.Add)
                 {
-                    var evtPayload = new DeleteProductCategory(productCategoryEntity.Id);
-                    var createdBy = _userService.CurrentUserId();
+                    foreach (var productCategoryEntity in productCategoryEntities)
+                    {
+                        var evtPayload = new DeleteProductCategory(productCategoryEntity.Id);
+                        var createdBy = _userService.CurrentUserId();
 
-                    await UpdateStreamAsync(productCategoryEntity, evtPayload, createdBy);
-                    await _ProductCategoryCheckpointRepository.FastForwardAsync(productCategoryEntity);
+                        await UpdateStreamAsync(productCategoryEntity, evtPayload, createdBy);
+                        await _ProductCategoryCheckpointRepository.FastForwardAsync(productCategoryEntity);
 
-                    await Task.WhenAll(
-                        InvokeDaprMethods(productCategoryEntity.Id, productCategoryEntity.GetEvents(productCategoryEntity.AtSequence)));
+                        await Task.WhenAll(
+                            InvokeDaprMethods(productCategoryEntity.Id, productCategoryEntity.GetEvents(productCategoryEntity.AtSequence)));
 
-                    results.Add(_mapper.Map<ProductCategoryRecord>(productCategoryEntity));
+                        results.Add(_mapper.Map<ProductCategoryRecord>(productCategoryEntity));
+                    }
                 }
 
-                if (command.ProductIds is not null)
+                if (command.ProductIds is not null && command.Type != SetType.Remove)
                 {
                     foreach (var productId in command.ProductIds)
                     {
