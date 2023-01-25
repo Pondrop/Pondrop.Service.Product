@@ -248,11 +248,12 @@ public class ProductController : ControllerBase
     public Task ProxySearchCatchAll()
     {
         var queryString = this.Request.QueryString.Value?.TrimStart('?') ?? string.Empty;
+        queryString = queryString.Remove(queryString.LastIndexOf("&"));
         var url = Path.Combine(
             _searchIdxConfig.BaseUrl,
             "indexes",
             _searchIdxConfig.ProductIndexName,
-            $"docs/suggest?api-version=2021-04-30-Preview&suggesterName=sg1&$top=20&search={queryString}");
+            $"docs/suggest?api-version=2021-04-30-Preview&suggesterName=sg1&$top=20&{queryString}");
 
         return this.HttpProxyAsync(url, _searchProxyOptions);
     }
