@@ -253,7 +253,8 @@ public class ProductController : ControllerBase
             _searchIdxConfig.BaseUrl,
             "indexes",
             _searchIdxConfig.ProductIndexName,
-            $"docs/suggest?api-version=2021-04-30-Preview&suggesterName=sg1&$top=20&{queryString}");
+            $"docs?api-version=2021-04-30-Preview&{queryString}*");
+            // $"docs/suggest?api-version=2021-04-30-Preview&suggesterName=sg1&$top=20&{queryString}&$select=*");
 
         return this.HttpProxyAsync(url, _searchProxyOptions);
     }
